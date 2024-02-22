@@ -1,5 +1,10 @@
 package co.edu.upb.labs_upb.dto;
 
+import co.edu.upb.labs_upb.model.Rol;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class UsuarioDTO {
 
     private Long id;
@@ -13,6 +18,11 @@ public class UsuarioDTO {
     private String email;
 
     private String password;
+
+    private List<String> roles;
+    private LocalDateTime fechaCreacion;
+
+    private LocalDateTime fechaActualizacion;
 
 
     public Long getId() {
@@ -61,5 +71,29 @@ public class UsuarioDTO {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public LocalDateTime getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
+        this.fechaActualizacion = fechaActualizacion;
+    }
+
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 }

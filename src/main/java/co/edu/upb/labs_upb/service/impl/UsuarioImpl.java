@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,6 +43,7 @@ public class UsuarioImpl implements IUsuarioService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UsuarioDTO> findAllUsers() throws RestException {
 
         List<Usuario> usuarios = usuarioRepository.findAll();
@@ -66,12 +69,58 @@ public class UsuarioImpl implements IUsuarioService {
 
     @Override
     public UsuarioDTO findUserById(Long id) throws RestException {
-        return null;
+
+        Usuario usuario = usuarioRepository.findById(id).orElse(null);
+
+        if(usuario == null){
+            throw new NotFoundException(
+                    ErrorDto.getErrorDto(
+                            HttpStatus.NOT_FOUND.getReasonPhrase(),
+                            "No Se encontraron usuarios",
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
+
+        return usuarioConverter.usuarioToUsuarioDto(usuario);
     }
 
     @Override
     public UsuarioDTO saveUser(UsuarioDTO user) throws RestException {
-        return null;
+
+        if(user == null){
+            throw new NotFoundException(
+                    ErrorDto.getErrorDto(
+                            HttpStatus.NOT_FOUND.getReasonPhrase(),
+                            "we can't save a null user",
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+
+        user.setFechaCreacion(now);
+        user.setFechaActualizacion(now);
+
+        Usuario usuario = usuarioConverter.usuarioDtoToUsuario(user);
+        if(user.getId() != null){
+            Usuario exist = usuarioRepository.findByDocumento(user.getDocumento());
+            if(exist != null && !exist.getId().equals(user.getId())){
+                throw new NotFoundException(
+                        ErrorDto.getErrorDto(
+                                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                                "we can't save a existing user",
+                                HttpStatus.ALREADY_REPORTED.value()
+                        )
+                );
+            }
+        }
+        usuarioRepository.save(usuario);
+
+        user.setId(usuario.getId());
+
+        return user;
     }
 
     @Override

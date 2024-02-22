@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -38,8 +39,13 @@ public class Usuario implements Serializable {
             @JoinTable(name = "roles_usuarios",
             joinColumns = {@JoinColumn(name = "id_usuarios")},
             inverseJoinColumns = {@JoinColumn(name = "id_roles")})
-    List<Rol> rol;
+    List<Rol> roles;
 
 
+    @Column(name = "fecha_creacion", nullable = false)
+    LocalDateTime fechaCreacion;
+
+    @Column(name = "fecha_actualizacion", nullable = false)
+    LocalDateTime fechaActualizacion;
 
 }
