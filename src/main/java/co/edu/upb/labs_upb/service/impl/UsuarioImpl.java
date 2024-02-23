@@ -58,11 +58,9 @@ public class UsuarioImpl implements IUsuarioService {
             );
         }
 
-        List<UsuarioDTO> usuariosDTO = Collections.emptyList();
+        List<UsuarioDTO> usuariosDTO;
 
-        for(Usuario usuario : usuarios){
-            usuariosDTO.add(usuarioConverter.usuarioToUsuarioDto(usuario));
-        }
+        usuariosDTO = usuarios.stream().map(usuario -> usuarioConverter.usuarioToUsurioDTO(usuario)).toList();
 
         return usuariosDTO;
     }
@@ -82,7 +80,7 @@ public class UsuarioImpl implements IUsuarioService {
             );
         }
 
-        return usuarioConverter.usuarioToUsuarioDto(usuario);
+        return usuarioConverter.usuarioToUsurioDTO(usuario);
     }
 
     @Override
@@ -103,14 +101,14 @@ public class UsuarioImpl implements IUsuarioService {
         user.setFechaCreacion(now);
         user.setFechaActualizacion(now);
 
-        Usuario usuario = usuarioConverter.usuarioDtoToUsuario(user);
+        Usuario usuario = UsuarioConverter.usuarioDtoToUsuario(user);
         if(user.getId() != null){
             Usuario exist = usuarioRepository.findByDocumento(user.getDocumento());
             if(exist != null && !exist.getId().equals(user.getId())){
                 throw new NotFoundException(
                         ErrorDto.getErrorDto(
-                                HttpStatus.NOT_FOUND.getReasonPhrase(),
-                                "we can't save a existing user",
+                                HttpStatus.ALREADY_REPORTED.getReasonPhrase(),
+                                "The user already exist",
                                 HttpStatus.ALREADY_REPORTED.value()
                         )
                 );

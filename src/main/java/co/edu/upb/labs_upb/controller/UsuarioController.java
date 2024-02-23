@@ -26,7 +26,8 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuarios);
     }
 
-
+    @PostMapping("/create")
+    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<Object> createUser(@RequestBody UsuarioDTO usuarioDTO) throws RestException {
         UsuarioDTO usuario = usuarioService.saveUser(usuarioDTO);
 

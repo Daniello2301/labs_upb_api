@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Component
 public class UsuarioConverter {
 
-    public Usuario usuarioDtoToUsuario(UsuarioDTO usuarioDTO) {
+    public static Usuario usuarioDtoToUsuario(UsuarioDTO usuarioDTO) {
         Usuario usuario = new Usuario();
         usuario.setId(usuarioDTO.getId());
         usuario.setDocumento(usuarioDTO.getDocumento());
@@ -22,11 +22,6 @@ public class UsuarioConverter {
         usuario.setContrasena(usuarioDTO.getPassword());
         usuario.setFechaActualizacion(usuarioDTO.getFechaActualizacion());
         usuario.setFechaCreacion(usuarioDTO.getFechaCreacion());
-        /*Arrays.stream(usuarioDTO.getRoles().toArray()).forEach(rol -> {
-            Rol rol1 = new Rol();
-            rol1.setNombre(rol.toString());
-            usuario.getRoles().add(rol1);
-        });*/
         usuario.setRoles(usuarioDTO.getRoles()
                 .stream()
                 .map(rol -> {
@@ -39,14 +34,7 @@ public class UsuarioConverter {
         return usuario;
     }
 
-    public static void setMapValuesClient(List<Usuario> usuarios, List<UsuarioDTO> usuariosDto){
-        usuarios.stream().map(usuario -> {
-            UsuarioDTO usDto = getMapValuesClient(usuario);
-            return usDto;
-        }).forEach(usuariosDto::add);
-    }
-
-    public static UsuarioDTO getMapValuesClient(Usuario usuario){
+    public static UsuarioDTO usuarioToUsurioDTO(Usuario usuario){
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setId(usuario.getId());
         usuarioDTO.setDocumento(usuario.getDocumento());
