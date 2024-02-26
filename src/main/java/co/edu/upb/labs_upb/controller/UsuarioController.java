@@ -21,16 +21,24 @@ public class UsuarioController {
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Object> findAllUsers() throws RestException {
-        List<UsuarioDTO> usuarios = usuarioService.findAllUsers();
+        List<UsuarioDTO> usuariosDto = usuarioService.findAllUsers();
 
-        return ResponseEntity.ok().body(usuarios);
+        return ResponseEntity.ok().body(usuariosDto);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<Object> findUserById(@PathVariable Long id) throws RestException {
+        UsuarioDTO usuarioDto = usuarioService.findUserById(id);
+
+        return ResponseEntity.ok().body(usuarioDto);
     }
 
     @PostMapping("/create")
     @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<Object> createUser(@RequestBody UsuarioDTO usuarioDTO) throws RestException {
-        UsuarioDTO usuario = usuarioService.saveUser(usuarioDTO);
+        UsuarioDTO usuarioDto = usuarioService.saveUser(usuarioDTO);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioDto);
     }
 }

@@ -3,6 +3,8 @@ package co.edu.upb.labs_upb.converter;
 import co.edu.upb.labs_upb.dto.UsuarioDTO;
 import co.edu.upb.labs_upb.model.Rol;
 import co.edu.upb.labs_upb.model.Usuario;
+import co.edu.upb.labs_upb.repository.IRolRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 public class UsuarioConverter {
+
 
     public static Usuario usuarioDtoToUsuario(UsuarioDTO usuarioDTO) {
         Usuario usuario = new Usuario();
@@ -22,14 +25,6 @@ public class UsuarioConverter {
         usuario.setContrasena(usuarioDTO.getPassword());
         usuario.setFechaActualizacion(usuarioDTO.getFechaActualizacion());
         usuario.setFechaCreacion(usuarioDTO.getFechaCreacion());
-        usuario.setRoles(usuarioDTO.getRoles()
-                .stream()
-                .map(rol -> {
-                    Rol rol1 = new Rol();
-                    rol1.setNombre(rol);
-                    return rol1;
-                })
-                .collect(Collectors.toList()));
 
         return usuario;
     }
@@ -44,10 +39,7 @@ public class UsuarioConverter {
         usuarioDTO.setPassword(usuario.getContrasena());
         usuarioDTO.setFechaCreacion(usuario.getFechaCreacion());
         usuarioDTO.setFechaActualizacion(usuario.getFechaActualizacion());
-        usuarioDTO.setRoles(usuario.getRoles()
-                .stream()
-                .map(Rol::getNombre)
-                .collect(Collectors.toList()));
+
         return usuarioDTO;
     }
 }

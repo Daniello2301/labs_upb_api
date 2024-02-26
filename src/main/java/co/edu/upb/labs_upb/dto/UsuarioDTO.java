@@ -4,6 +4,7 @@ import co.edu.upb.labs_upb.model.Rol;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 public class UsuarioDTO {
 
@@ -19,7 +20,7 @@ public class UsuarioDTO {
 
     private String password;
 
-    private List<String> roles;
+    private Set<String> roles;
     private LocalDateTime fechaCreacion;
 
     private LocalDateTime fechaActualizacion;
@@ -89,11 +90,11 @@ public class UsuarioDTO {
         this.fechaActualizacion = fechaActualizacion;
     }
 
-    public List<String> getRoles() {
+    public Set<String> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(Set<String> roles) {
         this.roles = roles;
     }
 }

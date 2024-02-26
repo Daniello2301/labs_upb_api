@@ -43,7 +43,6 @@ public class UsuarioConverterTest {
         usuario1.setNombre("Juan");
         usuario1.setApellido("Perez");
         usuario1.setCorreo("usuario@correo.com");
-        usuario1.setRoles(rols);
 
 
         // When
@@ -55,8 +54,6 @@ public class UsuarioConverterTest {
         assertEquals(usuario1.getNombre(), usuarioDTO.getNombre());
         assertEquals(usuario1.getApellido(), usuarioDTO.getApellido());
         assertEquals(usuario1.getCorreo(), usuarioDTO.getEmail());
-        assertEquals(usuario1.getRoles().get(0).getNombre(), usuarioDTO.getRoles().get(0));
-        assertEquals(usuario1.getRoles().get(1).getNombre(), usuarioDTO.getRoles().get(1));
     }
 
     @Test
@@ -77,7 +74,6 @@ public class UsuarioConverterTest {
         usuario1Dto.setNombre("Juan");
         usuario1Dto.setApellido("Perez");
         usuario1Dto.setEmail("usuario@correo.com");
-        usuario1Dto.setRoles(rols);
 
 
         // When
@@ -108,9 +104,6 @@ public class UsuarioConverterTest {
         usuarioDTO.setNombre(nombre);
         usuarioDTO.setApellido(apellido);
         usuarioDTO.setEmail(email);
-        usuarioDTO.setRoles(
-                roles
-        );
         return usuarioDTO;
     }
 
@@ -121,9 +114,6 @@ public class UsuarioConverterTest {
         usuario.setNombre(nombre);
         usuario.setApellido(apellido);
         usuario.setCorreo(email);
-        usuario.setRoles(
-                roles
-        );
         return usuario;
     }
 }
