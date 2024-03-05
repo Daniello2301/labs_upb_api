@@ -22,11 +22,13 @@ public interface IUsuarioService {
     // CRUD methods
 
     public List<UsuarioDTO> findAllUsers() throws RestException;
+
+    public UsuarioDTO findByCorreo(String correo) throws RestException;
     public UsuarioDTO findUserById(Long id) throws RestException;
 
     public UsuarioDTO saveUser(UsuarioDTO user) throws RestException;
 
-    public UsuarioDTO updateUser(Long id, UsuarioDTO user) throws RestException;
+
 
     public void deleteUser(Long id) throws RestException;
 

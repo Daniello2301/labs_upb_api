@@ -16,7 +16,7 @@ public class UsuarioDTO {
 
     private String apellido;
 
-    private String email;
+    private String correo;
 
     private String password;
 
@@ -58,12 +58,12 @@ public class UsuarioDTO {
         this.apellido = apellido;
     }
 
-    public String getEmail() {
-        return email;
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCorreo(String email) {
+        this.correo = email;
     }
 
     public String getPassword() {

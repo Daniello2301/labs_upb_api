@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 public class UsuarioConverter {
 
 
-    public static Usuario usuarioDtoToUsuario(UsuarioDTO usuarioDTO) {
+    public  Usuario usuarioDtoToUsuario(UsuarioDTO usuarioDTO) {
         Usuario usuario = new Usuario();
         usuario.setId(usuarioDTO.getId());
         usuario.setDocumento(usuarioDTO.getDocumento());
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setApellido(usuarioDTO.getApellido());
-        usuario.setCorreo(usuarioDTO.getEmail());
+        usuario.setCorreo(usuarioDTO.getCorreo());
         usuario.setContrasena(usuarioDTO.getPassword());
         usuario.setFechaActualizacion(usuarioDTO.getFechaActualizacion());
         usuario.setFechaCreacion(usuarioDTO.getFechaCreacion());
@@ -29,13 +29,13 @@ public class UsuarioConverter {
         return usuario;
     }
 
-    public static UsuarioDTO usuarioToUsurioDTO(Usuario usuario){
+    public  UsuarioDTO usuarioToUsurioDTO(Usuario usuario){
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setId(usuario.getId());
         usuarioDTO.setDocumento(usuario.getDocumento());
         usuarioDTO.setNombre(usuario.getNombre());
         usuarioDTO.setApellido(usuario.getApellido());
-        usuarioDTO.setEmail(usuario.getCorreo());
+        usuarioDTO.setCorreo(usuario.getCorreo());
         usuarioDTO.setPassword(usuario.getContrasena());
         usuarioDTO.setFechaCreacion(usuario.getFechaCreacion());
         usuarioDTO.setFechaActualizacion(usuario.getFechaActualizacion());

@@ -49,6 +49,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<ErrorDto> getBadRequestException(BadRequestException e) {

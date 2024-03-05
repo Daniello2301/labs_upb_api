@@ -37,7 +37,7 @@ public class Usuario implements Serializable {
     String contrasena;
 
     @ManyToMany( fetch = FetchType.LAZY)
-            @JoinTable(name = "roles_usuarios",
+    @JoinTable(name = "roles_usuarios",
             joinColumns = {@JoinColumn(name = "id_usuarios")},
             inverseJoinColumns = {@JoinColumn(name = "id_roles")})
     Set<Rol> roles;
