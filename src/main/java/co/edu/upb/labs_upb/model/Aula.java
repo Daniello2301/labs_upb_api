@@ -13,17 +13,20 @@ import java.time.LocalDateTime;
 @Data
 @FieldDefaults( level = AccessLevel.PRIVATE)
 public class Aula implements Serializable {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_aula", nullable = false)
     Long id;
 
-    @Column(name = "numero_aula", nullable = false, unique = true)
+    @Column(name = "numero_aula", nullable = false)
     Long numero;
 
     String descripcion;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bloque_id", referencedColumnName = "id_bloque")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_bloque", nullable = false)
     Bloque bloque;
 
     @Column(name = "fecha_creacion", nullable = false)

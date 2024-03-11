@@ -1,20 +1,22 @@
 package co.edu.upb.labs_upb.dto;
 
+import java.time.LocalDateTime;
+
 public class AulaDTO {
 
     private Long id;
-    private String nombre;
+    private Long numero;
     private String descripcion;
-    private int bloque;
-    private String fechaCreacion;
-    private String fechaActualizacion;
+    private Long bloque;
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaActualizacion;
 
     public AulaDTO() {
     }
 
-    public AulaDTO(Long id, String nombre, String descripcion, int bloque, String fechaCreacion, String fechaActualizacion) {
+    public AulaDTO(Long id, Long numero, String descripcion, Long bloque, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
         this.id = id;
-        this.nombre = nombre;
+        this.numero = numero;
         this.descripcion = descripcion;
         this.bloque = bloque;
         this.fechaCreacion = fechaCreacion;
@@ -25,22 +27,22 @@ public class AulaDTO {
         return id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public Long getNumero() {
+        return numero;
     }
 
     public String getDescripcion() {
         return descripcion;
     }
 
-    public int getBloque() {
+    public Long getBloque() {
         return bloque;
     }
-    public String getFechaCreacion() {
+    public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public String getFechaActualizacion() {
+    public LocalDateTime getFechaActualizacion() {
         return fechaActualizacion;
     }
 
@@ -48,22 +50,22 @@ public class AulaDTO {
         this.id = id;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setNumero(Long numero) {
+        this.numero = numero;
     }
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
 
-    public void setBloque(int bloque) {
+    public void setBloque(Long bloque) {
         this.bloque = bloque;
     }
-    public void setFechaCreacion(String fechaCreacion) {
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public void setFechaActualizacion(String fechaActualizacion) {
+    public void setFechaActualizacion(LocalDateTime fechaActualizacion) {
         this.fechaActualizacion = fechaActualizacion;
     }
 

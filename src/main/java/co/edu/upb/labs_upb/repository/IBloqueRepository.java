@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface IBloqueRepository extends JpaRepository<Bloque, Long>{
+
+    public Bloque findByNumero(Long numero);
 }

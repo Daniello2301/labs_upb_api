@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -20,12 +21,12 @@ public class Bloque implements Serializable {
     Long id;
 
     @Column(name = "numero_bloque", nullable = false, unique = true)
-    int numero;
+    Long numero;
 
     String descripcion;
 
-    @OneToOne(mappedBy = "bloque")
-    Aula aula;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bloque", cascade = CascadeType.ALL)
+    List<Aula> aulas;
 
     @Column(name = "fecha_creacion", nullable = false)
     LocalDateTime fechaCreacion;
