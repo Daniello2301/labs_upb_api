@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Data
@@ -29,4 +30,7 @@ public class TipoActivo implements Serializable {
 
     @Column(name = "fecha_actualizacion", nullable = false)
     LocalDateTime fechaActualizacion;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tipoActivo", cascade = CascadeType.ALL)
+    Set<Activo> activos;
 }

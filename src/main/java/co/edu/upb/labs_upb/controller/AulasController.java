@@ -1,10 +1,13 @@
 package co.edu.upb.labs_upb.controller;
 
+import co.edu.upb.labs_upb.converter.AulasConverter;
 import co.edu.upb.labs_upb.dto.AulaDTO;
 import co.edu.upb.labs_upb.exception.ErrorDto;
 import co.edu.upb.labs_upb.exception.NotFoundException;
 import co.edu.upb.labs_upb.exception.RestException;
+import co.edu.upb.labs_upb.model.Aula;
 import co.edu.upb.labs_upb.repository.IAulaRepository;
+import co.edu.upb.labs_upb.repository.IBloqueRepository;
 import co.edu.upb.labs_upb.service.iface.IAulaService;
 import co.edu.upb.labs_upb.utilities.ConstUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,12 @@ public class AulasController {
     @Autowired
     private IAulaRepository aulaRepository;
 
+    @Autowired
+    private IBloqueRepository bloqueRepository;
+
+    @Autowired
+    private AulasConverter aulasConverter;
+
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Object> findAllAulas() throws RestException {
@@ -48,15 +57,24 @@ public class AulasController {
     @GetMapping("/aula/numero/{numero}")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Object> findAulaByNumero(@PathVariable Long numero) throws RestException {
-        AulaDTO aulaDto = aulaService.findAulaByNumero(numero);
+        List<AulaDTO> aulaDto = aulaService.findAulaByNumero(numero);
         return ResponseEntity.ok().body(aulaDto);
     }
 
         @GetMapping("/aula/{aula}/bloque/{bloque}")
         @ResponseStatus(code = HttpStatus.OK)
         public ResponseEntity<Object> findAulaByNumeroInTheSameBloque(@PathVariable Long aula, @PathVariable Long bloque) throws RestException {
-            List<Object> aulas = aulaRepository.findByNumeroInTheSameBloque(aula,  bloque);
-            return ResponseEntity.ok().body(aulas);
+            Aula aulaEncontrada = aulaRepository.findByNumeroInTheSameBloque(aula,  bloque);
+            if(aulaEncontrada == null){
+                throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                        ConstUtil.MESSAGE_NOT_FOUND,
+                        HttpStatus.INTERNAL_SERVER_ERROR.value()));
+            }
+            AulaDTO aulaDto = aulasConverter.aulaToAulaDTO(aulaEncontrada);
+
+            aulaDto.setBloque(bloqueRepository.findByNumero(aulaEncontrada.getBloque().getNumero()).getNumero());
+
+            return ResponseEntity.ok().body(aulaDto);
         }
 
 

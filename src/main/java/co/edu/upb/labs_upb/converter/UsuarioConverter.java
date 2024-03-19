@@ -18,6 +18,7 @@ public class UsuarioConverter {
     public  Usuario usuarioDtoToUsuario(UsuarioDTO usuarioDTO) {
         Usuario usuario = new Usuario();
         usuario.setId(usuarioDTO.getId());
+        usuario.setIdUpb(usuarioDTO.getIdUpb());
         usuario.setDocumento(usuarioDTO.getDocumento());
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setApellido(usuarioDTO.getApellido());
@@ -32,6 +33,7 @@ public class UsuarioConverter {
     public  UsuarioDTO usuarioToUsurioDTO(Usuario usuario){
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setId(usuario.getId());
+        usuarioDTO.setIdUpb(usuario.getIdUpb());
         usuarioDTO.setDocumento(usuario.getDocumento());
         usuarioDTO.setNombre(usuario.getNombre());
         usuarioDTO.setApellido(usuario.getApellido());

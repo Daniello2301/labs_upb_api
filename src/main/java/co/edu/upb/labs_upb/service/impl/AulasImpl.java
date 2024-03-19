@@ -13,17 +13,15 @@ import co.edu.upb.labs_upb.repository.IBloqueRepository;
 import co.edu.upb.labs_upb.service.iface.IAulaService;
 import co.edu.upb.labs_upb.utilities.ConstUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.ReadOnlyProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AulasImplement implements IAulaService {
+public class AulasImpl implements IAulaService {
 
     @Autowired
     private IAulaRepository aulaRepository;
@@ -101,36 +99,41 @@ public class AulasImplement implements IAulaService {
     }
 
     @Override
-    public AulaDTO findAulaByNumero(Long numero) throws RestException {
+    public List<AulaDTO> findAulaByNumero(Long numero) throws RestException {
 
-        Aula aula = aulaRepository.findByNumero(numero);
+        List<Aula> aulas = aulaRepository.findByNumero(numero);
 
-        if(aula == null){
+        if(aulas.isEmpty()){
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
-                            "No se encontro el aula",
+                            "No se encontraron aulas con ese numero",
                             HttpStatus.NOT_FOUND.value()
                     )
             );
         }
 
-        Bloque bloque = bloqueRepository.findByNumero(aula.getBloque().getNumero());
-        if(bloque == null){
-            throw new NotFoundException(
-                    ErrorDto.getErrorDto(
-                            HttpStatus.NOT_FOUND.getReasonPhrase(),
-                            "No se encontro el bloque",
-                            HttpStatus.NOT_FOUND.value()
-                    )
-            );
+        List<AulaDTO> aulasDto = aulas.stream()
+                .map(aula -> aulasConverter.aulaToAulaDTO(aula))
+                .toList();
+
+        for(Aula aula : aulas) {
+            Bloque bloque = bloqueRepository.findByNumero(aula.getBloque().getNumero());
+            if (bloque == null) {
+                throw new NotFoundException(
+                        ErrorDto.getErrorDto(
+                                HttpStatus.NOT_FOUND.getReasonPhrase(),
+                                "No se encontro el bloque",
+                                HttpStatus.NOT_FOUND.value()
+                        )
+                );
+            }
+            aulasDto.stream()
+                    .filter(aulaDto -> aulaDto.getId().equals(aula.getId()))
+                    .forEach(aulaDto -> aulaDto.setBloque(bloque.getNumero()));
         }
 
-        AulaDTO aulaDTO = aulasConverter.aulaToAulaDTO(aula);
-
-        aulaDTO.setBloque(bloque.getNumero());
-
-        return aulaDTO;
+        return aulasDto;
     }
 
     @Override
@@ -162,8 +165,8 @@ public class AulasImplement implements IAulaService {
             }
         }
 
-        List<Object> aulaExistsInBloque = aulaRepository.findByNumeroInTheSameBloque(aulaDto.getNumero(), aulaDto.getBloque());
-        if(!aulaExistsInBloque.isEmpty()){
+        Aula aulaExistsInBloque = aulaRepository.findByNumeroInTheSameBloque(aulaDto.getNumero(), aulaDto.getBloque());
+        if(aulaExistsInBloque != null){
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),

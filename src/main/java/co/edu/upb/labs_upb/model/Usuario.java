@@ -21,13 +21,16 @@ public class Usuario implements Serializable {
     @Column( name = "id_usuario", nullable = false)
     Long id;
 
+    @Column( name = "id_upb", nullable = false, unique = true)
+    Long idUpb;
+
     @Column( name = "documento_identificacion", nullable = false, unique = true)
     Long documento;
 
     @Column( nullable = false, length = 100)
     String nombre;
 
-    @Column( nullable = true, length = 100)
+    @Column(length = 100)
     String apellido;
 
     @Column( nullable = false, unique = true)
@@ -43,10 +46,17 @@ public class Usuario implements Serializable {
     Set<Rol> roles;
 
 
+    @OneToMany( fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.ALL)
+    Set<Activo> activos;
+
+
     @Column(name = "fecha_creacion", nullable = false)
     LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion", nullable = false)
     LocalDateTime fechaActualizacion;
+
+
+
 
 }

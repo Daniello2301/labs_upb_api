@@ -10,6 +10,7 @@ public class UsuarioDTO {
 
     private Long id;
 
+    private Long idUpb;
     private Long documento;
 
     private String nombre;
@@ -25,6 +26,13 @@ public class UsuarioDTO {
 
     private LocalDateTime fechaActualizacion;
 
+    public Long getIdUpb() {
+        return idUpb;
+    }
+
+    public void setIdUpb(Long idUpb) {
+        this.idUpb = idUpb;
+    }
 
     public Long getId() {
         return id;

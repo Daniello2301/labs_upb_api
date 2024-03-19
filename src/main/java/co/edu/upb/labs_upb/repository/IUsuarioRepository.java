@@ -10,4 +10,7 @@ public interface IUsuarioRepository extends JpaRepository<Usuario, Long>
     public Usuario findByCorreo(String correo);
 
     Usuario findByDocumento(Long documento);
+
+    Usuario findByIdUpb(Long idUpb);
+
 }

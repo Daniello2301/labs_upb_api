@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "aulas")
@@ -25,14 +26,17 @@ public class Aula implements Serializable {
 
     String descripcion;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_bloque", nullable = false)
-    Bloque bloque;
-
     @Column(name = "fecha_creacion", nullable = false)
     LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion", nullable = false)
     LocalDateTime fechaActualizacion;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_bloque")
+    Bloque bloque;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "aula", cascade = CascadeType.ALL)
+    List<Activo> activos;
 
 }

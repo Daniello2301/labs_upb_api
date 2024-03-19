@@ -14,7 +14,7 @@ public interface IAulaService {
 
     public AulaDTO findAulaById(Long id) throws RestException;
 
-    public AulaDTO findAulaByNumero(Long numero) throws RestException;
+    List<AulaDTO> findAulaByNumero(Long numero) throws RestException;
 
     public AulaDTO saveAula(AulaDTO aula) throws RestException;
 
