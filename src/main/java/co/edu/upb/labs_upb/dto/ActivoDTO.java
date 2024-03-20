@@ -12,6 +12,7 @@ public class ActivoDTO {
     private String serial;
     private String modelo;
     private String descripcion;
+    private Boolean estado;
     private String tipoActivo;
     private Long aula;
     private Long bloque;

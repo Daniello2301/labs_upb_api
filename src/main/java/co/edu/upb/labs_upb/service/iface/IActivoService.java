@@ -7,6 +7,7 @@ import co.edu.upb.labs_upb.model.Usuario;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface IActivoService {
@@ -14,7 +15,7 @@ public interface IActivoService {
     Page<ActivoDTO> activosPagination(int numPage, int sizePage) throws RestException;
 
     //Sort by
-    List<ActivoDTO> activosSortBy(String sortBy) throws RestException;
+    Map<String, Object> activosEnable(int page, int size, String sortby) throws RestException;
 
     //Sort by and pagination
     Page<ActivoDTO> activosPaginationSortBy(int numPage, int sizePage, String sortBy) throws RestException;

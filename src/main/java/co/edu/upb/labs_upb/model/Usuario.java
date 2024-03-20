@@ -46,7 +46,7 @@ public class Usuario implements Serializable {
     Set<Rol> roles;
 
 
-    @OneToMany( fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToMany( fetch = FetchType.LAZY, mappedBy = "usuario")
     Set<Activo> activos;
 
 

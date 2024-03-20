@@ -31,6 +31,6 @@ public class TipoActivo implements Serializable {
     @Column(name = "fecha_actualizacion", nullable = false)
     LocalDateTime fechaActualizacion;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tipoActivo", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tipoActivo")
     Set<Activo> activos;
 }

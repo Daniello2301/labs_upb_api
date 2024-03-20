@@ -2,6 +2,8 @@ package co.edu.upb.labs_upb.repository;
 
 
 import co.edu.upb.labs_upb.model.Activo;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,7 +15,14 @@ public interface IActivoRepository extends JpaRepository<Activo, Long> {
 
     Activo  findByNumeroInventario(String numeroInventario);
 
-
+    /*
+    @Query(nativeQuery = true,
+            value =
+                    "SELECT * " +
+                    "FROM Activos a " +
+                    "WHERE a.estado = 1")
+    Set<Activo> findAllEnable();
+    */
     @Query(nativeQuery = true,
             value =
                     "SELECT " +
@@ -34,5 +43,11 @@ public interface IActivoRepository extends JpaRepository<Activo, Long> {
                     "ON a.id_usuario = u.id_usuario " +
                     "WHERE u.id_upb = ?1")
     Set<Activo> findByUsuarioIdUpb(String idUsuarioUpb);
+
+    @Query(nativeQuery = true,
+            value = "SELECT * " +
+                    "FROM Activos a " +
+                    "WHERE a.estado = ?1")
+    Page<Activo> finByEstado(boolean estado, Pageable pageable);
 
 }

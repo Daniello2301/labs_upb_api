@@ -19,9 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.text.html.parser.Entity;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,22 +52,26 @@ public class ActivoImpl implements IActivoService {
         return getActivos(pageable);
     }
 
-    @Override
     @Transactional(readOnly = true)
-    public List<ActivoDTO> activosSortBy(String sortBy) throws RestException {
+    public Map<String, Object> activosEnable(int page, int size, String sortby) throws RestException {
 
-        List<Activo> activos = activoRepository.findAll(Sort.by(Sort.Direction.ASC, sortBy));
-        if(activos.isEmpty())
+        Pageable paging = PageRequest.of(page, size).withSort(Sort.by(Sort.Direction.ASC, sortby));
+
+        Page<Activo> activosEncontrados = activoRepository.finByEstado(true, paging);
+        if(activosEncontrados.isEmpty())
         {
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     ConstUtil.MESSAGE_NOT_FOUND, HttpStatus.NOT_FOUND.value()));
         }
 
-        List<ActivoDTO> activoDTOS = activos.stream()
+        List<Activo> activosResponse = activosEncontrados.getContent();
+
+
+        List<ActivoDTO> activoDTOS = activosResponse.stream()
                                     .map(activo -> activoConverter.convertToDTO(activo))
                                     .toList();
 
-        for(Activo activo: activos){
+        for(Activo activo: activosResponse){
             TipoActivo tipoActivo = tipoActivoRepository.findByNomenclatura(activo.getTipoActivo().getNomenclatura());
             Aula aula = aulaRepository.findByNumeroInTheSameBloque(activo.getAula().getNumero(), activo.getBloque().getNumero());
             Bloque bloque = bloqueRepository.findByNumero(activo.getBloque().getNumero());
@@ -86,7 +88,16 @@ public class ActivoImpl implements IActivoService {
             });
         }
 
-        return activoDTOS;
+        Map<String, Object> response = new HashMap<>();
+        response.put("Items", activoDTOS);
+        response.put("currentPage", activosEncontrados.getNumber());
+        response.put("totalItems", activosEncontrados.getTotalElements());
+        response.put("totalPages", activosEncontrados.getTotalPages());
+        response.put("pageable", activosEncontrados.getPageable());
+        response.put("sort", activosEncontrados.getPageable().getSort());
+
+
+        return response;
     }
 
     @Override
@@ -165,7 +176,6 @@ public class ActivoImpl implements IActivoService {
 
             });
         });
-
 
         return activoDTOS;
     }

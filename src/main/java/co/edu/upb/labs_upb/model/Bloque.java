@@ -25,8 +25,8 @@ public class Bloque implements Serializable {
 
     String descripcion;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bloque", cascade = CascadeType.ALL)
-    List<Aula> aulas;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bloque", cascade  = CascadeType.REMOVE)
+//    List<Aula> aulas;
 
     @Column(name = "fecha_creacion", nullable = false)
     LocalDateTime fechaCreacion;

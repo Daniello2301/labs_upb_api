@@ -32,11 +32,11 @@ public class Aula implements Serializable {
     @Column(name = "fecha_actualizacion", nullable = false)
     LocalDateTime fechaActualizacion;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "id_bloque")
     Bloque bloque;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "aula", cascade = CascadeType.ALL)
-    List<Activo> activos;
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "aula")
+//    List<Activo> activos;
 
 }

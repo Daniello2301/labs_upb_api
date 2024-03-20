@@ -23,8 +23,8 @@ public class Rol {
     @Column(name = "descripcion", nullable = false )
     private String descripcion;
 
-    @ManyToMany(mappedBy = "roles")
-    private List<Usuario> usuarios;
+//    @ManyToMany(mappedBy = "roles")
+//    private List<Usuario> usuarios;
 
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;

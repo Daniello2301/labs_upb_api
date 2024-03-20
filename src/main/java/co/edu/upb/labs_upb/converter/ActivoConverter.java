@@ -14,6 +14,7 @@ public class ActivoConverter {
         activoDTO.setSerial(activo.getSerial());
         activoDTO.setModelo(activo.getModelo());
         activoDTO.setDescripcion(activo.getDescripcion());
+        activoDTO.setEstado(activo.getEstado());
         activoDTO.setFechaCreacion(activo.getFechaCreacion());
         activoDTO.setFechaActualizacion(activo.getFechaActualizacion());
         return activoDTO;
@@ -26,6 +27,7 @@ public class ActivoConverter {
         activo.setSerial(activoDTO.getSerial());
         activo.setModelo(activoDTO.getModelo());
         activo.setDescripcion(activoDTO.getDescripcion());
+        activo.setEstado(activoDTO.getEstado());
         activo.setFechaCreacion(activoDTO.getFechaCreacion());
         activo.setFechaActualizacion(activoDTO.getFechaActualizacion());
         return activo;

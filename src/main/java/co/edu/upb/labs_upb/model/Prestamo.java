@@ -33,8 +33,10 @@ public class Prestamo implements Serializable {
 
     String facultad;
 
+    Boolean estado;
+
     @Column(name = "id_persona", nullable = false)
-    Long  idPersona;
+    String  idPersona;
 
     @Column(name = "nombre_persona", nullable = false)
     String nombrePersona;
@@ -45,6 +47,6 @@ public class Prestamo implements Serializable {
     @Column( name = "fecha_actualizacion", nullable = false)
     LocalDateTime fechaActualizacion;
 
-    @OneToMany( fetch = FetchType.LAZY, mappedBy = "prestamo", cascade = CascadeType.ALL)
+    @OneToMany( fetch = FetchType.LAZY, mappedBy = "prestamo")
     Set<Activo> activos;
 }

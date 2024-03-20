@@ -37,11 +37,20 @@ public class ActivoController {
         return activoService.activosPaginationSortBy(numPage, sizePage, sortBy);
     }
 
-
     @GetMapping("/all")
     @ResponseStatus(code = HttpStatus.OK)
     public ResponseEntity<Object> getAll() throws RestException {
         return ResponseEntity.ok().body(activoService.getAll());
+    }
+
+    @GetMapping("/enable/{page}/{size}/{sortby}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public ResponseEntity<Map<String, Object>> getEnable(
+            @PathVariable int page,
+            @PathVariable int size,
+            @PathVariable String sortby
+    ) throws RestException {
+        return ResponseEntity.ok().body(activoService.activosEnable(page, size, sortby));
     }
 
     @GetMapping("{id}")
@@ -83,6 +92,7 @@ public class ActivoController {
         activoEncontrado.setSerial(activoDTO.getSerial());
         activoEncontrado.setModelo(activoDTO.getModelo());
         activoEncontrado.setDescripcion(activoDTO.getDescripcion());
+        activoEncontrado.setEstado(activoDTO.getEstado());
         activoEncontrado.setTipoActivo(activoDTO.getTipoActivo());
         activoEncontrado.setAula(activoDTO.getAula());
         activoEncontrado.setBloque(activoDTO.getBloque());
@@ -96,9 +106,10 @@ public class ActivoController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @PutMapping("/disable/{id}")
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable Long id) throws RestException {
+        LocalDateTime now = LocalDateTime.now();
         ActivoDTO response = activoService.getById(id);
         if (response == null){
             throw new NotFoundException(
@@ -109,11 +120,14 @@ public class ActivoController {
                     )
             );
         }else{
-            activoService.deleteById(id);
+
+            response.setFechaActualizacion(now);
+            response.setEstado(false);
+            activoService.create(response);
 
             Map<String, Object> responseMap = new HashMap<>();
 
-            responseMap.put("Message: ", "Activo eliminado");
+            responseMap.put("Message: ", "Activo desactivado correctamente");
             responseMap.put("Activo: ", response);
             return ResponseEntity.ok().body(responseMap);
 

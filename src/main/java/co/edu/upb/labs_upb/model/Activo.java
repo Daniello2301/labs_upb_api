@@ -29,6 +29,8 @@ public class Activo implements Serializable {
 
     String descripcion;
 
+    Boolean estado;
+
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
     @JoinColumn( name = "id_tipo_activo")
     TipoActivo tipoActivo;
