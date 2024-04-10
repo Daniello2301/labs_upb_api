@@ -10,6 +10,7 @@ public class PrestamoConverter {
     public PrestamoDTO entityToDto(Prestamo prestamo) {
         PrestamoDTO prestamoDTO = new PrestamoDTO();
         prestamoDTO.setId(prestamo.getId());
+        prestamoDTO.setNumeroPrestamo(prestamo.getNumeroPrestamo());
         prestamoDTO.setFechaSalida(prestamo.getFechaSalida());
         prestamoDTO.setFechaEntrega(prestamo.getFechaEntrega());
         prestamoDTO.setLaboratorio(prestamo.getLaboratorio());
@@ -27,6 +28,7 @@ public class PrestamoConverter {
     public Prestamo dtoToEntity(PrestamoDTO prestamoDTO) {
         Prestamo prestamo = new Prestamo();
         prestamo.setId(prestamoDTO.getId());
+        prestamo.setNumeroPrestamo(prestamoDTO.getNumeroPrestamo());
         prestamo.setFechaSalida(prestamoDTO.getFechaSalida());
         prestamo.setFechaEntrega(prestamoDTO.getFechaEntrega());
         prestamo.setLaboratorio(prestamoDTO.getLaboratorio());

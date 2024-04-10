@@ -57,4 +57,7 @@ public class Activo implements Serializable {
     @Column(name = "fecha_actualizacion", nullable = false)
     LocalDateTime fechaActualizacion;
 
-}
+};
+
+
+;

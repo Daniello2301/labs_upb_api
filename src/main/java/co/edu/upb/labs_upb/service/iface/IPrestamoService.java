@@ -4,17 +4,22 @@ import co.edu.upb.labs_upb.dto.PrestamoDTO;
 import co.edu.upb.labs_upb.exception.RestException;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IPrestamoService {
 
     // CRUD methods
 
-    public List<PrestamoDTO> getAll() throws RestException;
+    List<PrestamoDTO> getAll() throws RestException;
 
-    public PrestamoDTO getById(Long id) throws RestException;
+    PrestamoDTO getById(Long id) throws RestException;
 
-    public PrestamoDTO create(PrestamoDTO prestamoDTO) throws RestException;
+    Map<String, Object> prestamosEnable(int page, int size, String sortby) throws RestException;
 
-    public void deleteById(Long id) throws RestException;
+    PrestamoDTO create(PrestamoDTO prestamoDTO) throws RestException;
+
+    void addActivo(Long id, String numeroInventario) throws RestException;
+
+    void closePrestamo(Long id) throws RestException;
 
 }

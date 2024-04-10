@@ -5,8 +5,10 @@ import co.edu.upb.labs_upb.model.Activo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
@@ -31,6 +33,7 @@ public interface IActivoRepository extends JpaRepository<Activo, Long> {
                         "a.descripcion, " +
                         "a.serial, " +
                         "a.modelo, " +
+                        "a.estado, "+
                         "a.id_aula, " +
                         "a.id_usuario, " +
                         "a.id_tipo_activo, " +
@@ -50,4 +53,14 @@ public interface IActivoRepository extends JpaRepository<Activo, Long> {
                     "WHERE a.estado = ?1")
     Page<Activo> finByEstado(boolean estado, Pageable pageable);
 
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM activos a WHERE a.id_prestamo = ?1")
+    Set<Activo> findByIdPrestamo(Long idPrestamo);
+
+
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true,
+    value ="UPDATE activos a SET a.id_prestamo = ?1 WHERE a.numero_inventario = ?2")
+    void updatePrestamo(Long idPrestamo, String numeroInventario);
 }

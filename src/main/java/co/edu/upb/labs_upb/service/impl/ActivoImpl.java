@@ -232,7 +232,7 @@ public class ActivoImpl implements IActivoService {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                            "El aula no se encuentra en el bloque",
+                            "Para el activo: "+ activoDto.getNumeroInventario() +", el aula no se encuentra en el bloque",
                             HttpStatus.BAD_REQUEST.value()));
         }
 

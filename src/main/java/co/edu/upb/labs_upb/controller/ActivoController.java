@@ -1,9 +1,7 @@
 package co.edu.upb.labs_upb.controller;
 
 import co.edu.upb.labs_upb.dto.ActivoDTO;
-import co.edu.upb.labs_upb.exception.ErrorDto;
-import co.edu.upb.labs_upb.exception.NotFoundException;
-import co.edu.upb.labs_upb.exception.RestException;
+import co.edu.upb.labs_upb.exception.*;
 import co.edu.upb.labs_upb.model.Activo;
 import co.edu.upb.labs_upb.service.iface.IActivoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,13 +68,25 @@ public class ActivoController {
     @PostMapping("/create")
     @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<Object> create(@RequestBody ActivoDTO activoDTO) throws RestException {
-        LocalDateTime now = LocalDateTime.now();
 
-        activoDTO.setFechaCreacion(now);
-        activoDTO.setFechaActualizacion(now);
+        try {
 
-        ActivoDTO activo = activoService.create(activoDTO);
-        return ResponseEntity.ok().body(activo);
+            LocalDateTime now = LocalDateTime.now();
+
+            activoDTO.setFechaCreacion(now);
+            activoDTO.setFechaActualizacion(now);
+
+            ActivoDTO activo = activoService.create(activoDTO);
+            return ResponseEntity.ok().body(activo);
+
+        }catch (BadRequestException ex){
+            throw ex;
+        }catch (Exception ex){
+            throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
+                    ex.getMessage(),
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
+
     }
 
     @PutMapping("/update")

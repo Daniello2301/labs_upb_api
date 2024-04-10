@@ -20,10 +20,13 @@ public class Prestamo implements Serializable {
     @Column(name = "id_prestamo", nullable = false, unique = true)
     Long id;
 
+    @Column(name = "numero_prestamo", nullable = false, unique = true)
+    Long numeroPrestamo;
+
     @Column(name = "fecha_salida", nullable = false)
     LocalDateTime fechaSalida;
 
-    @Column(name = "fecha_entrega", nullable = false)
+    @Column(name = "fecha_entrega")
     LocalDateTime fechaEntrega;
 
     String laboratorio;
@@ -47,6 +50,6 @@ public class Prestamo implements Serializable {
     @Column( name = "fecha_actualizacion", nullable = false)
     LocalDateTime fechaActualizacion;
 
-    @OneToMany( fetch = FetchType.LAZY, mappedBy = "prestamo")
+    @OneToMany( fetch = FetchType.LAZY, mappedBy = "prestamo", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     Set<Activo> activos;
 }

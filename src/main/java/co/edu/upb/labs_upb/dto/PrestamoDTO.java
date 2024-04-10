@@ -9,6 +9,7 @@ import java.util.Set;
 public class PrestamoDTO {
 
     private Long id;
+    private Long numeroPrestamo;
     private LocalDateTime fechaSalida;
     private LocalDateTime fechaEntrega;
     private String laboratorio;
