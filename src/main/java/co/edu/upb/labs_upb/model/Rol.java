@@ -2,10 +2,15 @@ package co.edu.upb.labs_upb.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.io.Serializable;
+import java.security.Permission;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "roles")
@@ -31,5 +36,16 @@ public class Rol {
 
     @Column(name = "fecha_actualizacion", nullable = false)
     private LocalDateTime fechaActualizacion;
+
+//    @Getter
+//    private final Set<Permission>  permissions;
+//
+//    public  List<SimpleGrantedAuthority> getAuthorities(){
+//        var authorities = getAuthorities()
+//                .stream()
+//                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
+//                .toList();
+//        return authorities;
+//    }
 
 }

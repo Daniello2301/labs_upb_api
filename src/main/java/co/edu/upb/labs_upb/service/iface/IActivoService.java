@@ -22,6 +22,7 @@ public interface IActivoService {
 
     // CRUD methods
 
+
     List<ActivoDTO> getAll() throws RestException;
 
     Set<ActivoDTO>  getByUsuarioId(String idUsuarioUpb) throws RestException;

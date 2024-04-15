@@ -6,6 +6,7 @@ import co.edu.upb.labs_upb.model.Usuario;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IUsuarioService {
 
@@ -20,6 +21,9 @@ public interface IUsuarioService {
 
 
     // CRUD methods
+
+
+    Optional<Usuario> findByUsername(String username);
 
     public List<UsuarioDTO> findAllUsers() throws RestException;
 

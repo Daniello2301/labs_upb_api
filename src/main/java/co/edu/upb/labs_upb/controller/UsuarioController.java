@@ -8,6 +8,7 @@ import co.edu.upb.labs_upb.utilities.ConstUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,8 @@ public class UsuarioController {
 
     @Autowired
     private IUsuarioService usuarioService;
+
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
@@ -37,18 +40,25 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuarioDto);
     }
 
-    @PostMapping("/create")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public ResponseEntity<Object> createUser(@RequestBody UsuarioDTO usuarioDTO) throws RestException {
-
-            LocalDateTime now = LocalDateTime.now();
-            usuarioDTO.setFechaCreacion(now);
-            usuarioDTO.setFechaActualizacion(now);
-
-            UsuarioDTO nuevoUsuarioDto = usuarioService.saveUser(usuarioDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuarioDto);
-
-    }
+//    @PostMapping("/create")
+//    @ResponseStatus(code = HttpStatus.CREATED)
+//    public ResponseEntity<Object> createUser(@RequestBody UsuarioDTO usuarioDTO) throws RestException {
+//
+//            LocalDateTime now = LocalDateTime.now();
+//            usuarioDTO.setFechaCreacion(now);
+//            usuarioDTO.setFechaActualizacion(now);
+//
+//            if (usuarioDTO.getPassword() == null) {
+//                throw new BadRequestException(ErrorDto.getErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
+//                        ConstUtil.MESSAGE_ERROR_DATA,
+//                        HttpStatus.BAD_REQUEST.value()));
+//            }
+//            usuarioDTO.setPassword(bCryptPasswordEncoder.encode(usuarioDTO.getPassword()));
+//
+//            UsuarioDTO nuevoUsuarioDto = usuarioService.saveUser(usuarioDTO);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuarioDto);
+//
+//    }
 
 
     @PutMapping("/update")

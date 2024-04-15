@@ -107,7 +107,6 @@ public class ActivoImpl implements IActivoService {
 
         return getActivos(pageable);
     }
-
     @Override
     @Transactional(readOnly = true)
     public List<ActivoDTO> getAll() throws RestException {

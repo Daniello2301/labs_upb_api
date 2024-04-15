@@ -11,22 +11,22 @@ import co.edu.upb.labs_upb.repository.IRolRepository;
 import co.edu.upb.labs_upb.repository.IUsuarioRepository;
 import co.edu.upb.labs_upb.service.iface.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UsuarioImpl implements IUsuarioService {
+public class UsuarioImpl implements UserDetailsService, IUsuarioService {
 
     @Autowired
     private IUsuarioRepository  usuarioRepository;
@@ -37,21 +37,41 @@ public class UsuarioImpl implements IUsuarioService {
     @Autowired
     private UsuarioConverter usuarioConverter;
 
+
+    /**
+     * Method for paginating users.
+     */
     @Override
     public Page<Usuario> usersPagination(int numPage, int sizePage) throws RestException {
         return null;
     }
 
+
+    /**
+     * Method for paginating users with sorting.
+     */
     @Override
     public Page<Usuario> usersPaginationSortBy(String sortBy) throws RestException {
         return null;
     }
 
+
+    /**
+     * Method for paginating users with sorting and page size.
+     */
     @Override
     public Page<Usuario> usersPaginationSortBy(int numPage, int sizePage, String sortBy) throws RestException {
         return null;
     }
 
+    @Override
+    public Optional<Usuario> findByUsername(String username) {
+        return usuarioRepository.findByEmail(username);
+    }
+
+    /**
+     * Method for finding all users.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<UsuarioDTO> findAllUsers() throws RestException {
@@ -82,15 +102,19 @@ public class UsuarioImpl implements IUsuarioService {
         return usuariosDTO;
     }
 
+    /**
+     * Method for finding a user by email.
+     */
     @Override
     @Transactional(readOnly = true)
     public UsuarioDTO findByCorreo(String email) throws RestException {
 
-        Usuario usuarioEncontrado = usuarioRepository.findByCorreo(email);
+        Optional<Usuario> usuarioEncontrado = usuarioRepository.findByEmail(email);
 
-        UsuarioDTO usuarioDTO = usuarioConverter.usuarioToUsurioDTO(usuarioEncontrado);
+        UsuarioDTO usuarioDTO = usuarioConverter.usuarioToUsurioDTO(usuarioEncontrado.get());
 
         usuarioDTO.setRoles(usuarioEncontrado
+                .get()
                 .getRoles()
                 .stream()
                 .map(Rol::getNombre)
@@ -99,6 +123,9 @@ public class UsuarioImpl implements IUsuarioService {
         return usuarioDTO;
     }
 
+    /**
+     * Method for finding a user by id.
+     */
     @Override
     public UsuarioDTO findUserById(Long id) throws RestException {
 
@@ -122,6 +149,9 @@ public class UsuarioImpl implements IUsuarioService {
     }
 
 
+    /**
+     * Method for saving a user.
+     */
     @Override
     @Transactional
     public UsuarioDTO saveUser(UsuarioDTO userDTO) throws RestException {
@@ -152,6 +182,7 @@ public class UsuarioImpl implements IUsuarioService {
 
         // Se convierte el usuario DTO a usuario entity
         Usuario usuario = usuarioConverter.usuarioDtoToUsuario(userDTO);
+        usuario.setEnable(true);
 
         // Se mapean los roles de la lista de string del usuario DTO a una lista tipo Rol para el usuario entity
         Set<Rol> roles = new HashSet<>();
@@ -189,6 +220,9 @@ public class UsuarioImpl implements IUsuarioService {
         return userDTO;
     }
 
+    /**
+     * Method for deleting a user.
+     */
     @Override
     public void deleteUser(Long id) throws RestException {
         try{
@@ -206,5 +240,34 @@ public class UsuarioImpl implements IUsuarioService {
         }
 
 
+    }
+
+    /**
+     * Method for loading a user by username.
+     */
+    @Override
+    public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
+
+        Usuario usuario = usuarioRepository.findByEmail(correo).get();
+        if(usuario == null)
+        {
+            throw new UsernameNotFoundException("Error in login with credential " + correo);
+        }
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        Set<Rol> roles = usuario.getRoles();
+        for(Rol rol : roles){
+            GrantedAuthority ga = new SimpleGrantedAuthority(rol.getNombre());
+            authorities.add(ga);
+        }
+
+        return new User(
+                usuario.getUsername(),
+                usuario.getPassword(),
+                usuario.getEnable(),
+true,
+true,
+true,
+                authorities);
     }
 }
