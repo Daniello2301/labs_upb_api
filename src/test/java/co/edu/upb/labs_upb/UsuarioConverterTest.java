@@ -42,7 +42,7 @@ public class UsuarioConverterTest {
         usuario1.setDocumento(123456789L);
         usuario1.setNombre("Juan");
         usuario1.setApellido("Perez");
-        usuario1.setCorreo("usuario@correo.com");
+        usuario1.setEmail("usuario@correo.com");
 
 
         // When

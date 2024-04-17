@@ -5,40 +5,53 @@ import co.edu.upb.labs_upb.converter.UsuarioConverter;
 import co.edu.upb.labs_upb.dto.UsuarioDTO;
 import co.edu.upb.labs_upb.exception.ErrorDto;
 import co.edu.upb.labs_upb.exception.NotFoundException;
-import co.edu.upb.labs_upb.model.AuthenticationRequest;
-import co.edu.upb.labs_upb.model.AuthenticationResponse;
-import co.edu.upb.labs_upb.model.Rol;
-import co.edu.upb.labs_upb.model.Usuario;
+import co.edu.upb.labs_upb.exception.RestException;
+import co.edu.upb.labs_upb.model.*;
 import co.edu.upb.labs_upb.repository.IRolRepository;
 import co.edu.upb.labs_upb.repository.IUsuarioRepository;
+import co.edu.upb.labs_upb.service.iface.ITokenRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
-
-    private final IUsuarioRepository usuarioRepository;
-
-    private final PasswordEncoder passwordEncoder;
-
-    private final UsuarioConverter usuarioConverter;
-
-    private final IRolRepository rolRepository;
-
-    private final JwtService jwtService;
-
-    private final AuthenticationManager authenticationManager;
+public class AuthenticationService implements LogoutHandler {
 
 
-    public AuthenticationResponse register(UsuarioDTO userDTO) throws NotFoundException {
+    @Autowired
+    private IUsuarioRepository usuarioRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UsuarioConverter usuarioConverter;
+    @Autowired
+    private IRolRepository rolRepository;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private final ITokenRepository tokenRepository;
+
+    @Transactional
+    public AuthenticationResponse register(UsuarioDTO userDTO) throws RestException {
 
         // Validamos que si se pase un usuaro en la peticion
         if(userDTO == null){
@@ -64,11 +77,10 @@ public class AuthenticationService {
             );
         }
 
-        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-
         // Se convierte el usuario DTO a usuario entity
         Usuario usuario = usuarioConverter.usuarioDtoToUsuario(userDTO);
 
+        usuario.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         usuario.setEnable(true);
 
         // Se mapean los roles de la lista de string del usuario DTO a una lista tipo Rol para el usuario entity
@@ -89,29 +101,32 @@ public class AuthenticationService {
         // agregamos los roles convertidos al usuario
         usuario.setRoles(roles);
 
-
-        // si el usuario entrante tiene un id, se actualiza el usuario
-        if(userDTO.getId() != null){
-            boolean exist = usuarioRepository.existsById(userDTO.getId());
-            if(exist)
-            {
-                return new AuthenticationResponse();
-            }
-        }
-
         // guardamos el usuario
-        usuarioRepository.save(usuario);
+
+        var  jwtToken = jwtService.generateToken(usuario);
+        var refreshToken = jwtService.generateRefresToken(usuario);
+
+        var usuarioguardado = usuarioRepository.save(usuario);
+
+        saveUserToken(usuarioguardado, jwtToken);
 
         userDTO.setId(usuario.getId());
 
-        var  jwtToken = jwtService.generateToken(usuario);
+
+        System.out.println(userDTO+ " "+jwtToken);
 
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .id(usuario.getIdUpb())
+                .nombre(usuario.getNombre())
+                .email(usuario.getEmail())
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
                 .build();
 
     }
 
+
+    @Transactional
     public AuthenticationResponse login(AuthenticationRequest authRequest) {
 
         authenticationManager.authenticate(
@@ -120,10 +135,86 @@ public class AuthenticationService {
 
         var usuario = usuarioRepository.findByEmail(authRequest.getEmail()).orElseThrow();
 
+
         var  jwtToken = jwtService.generateToken(usuario);
+        var refreshToken = jwtService.generateRefresToken(usuario);
+
+        revokeAllUserTokens(usuario);
+        saveUserToken(usuario, jwtToken);
 
         return AuthenticationResponse.builder()
-                .token(jwtToken)
+                .id(usuario.getIdUpb())
+                .nombre(usuario.getNombre())
+                .email(usuario.getEmail())
+                .accessToken(jwtToken)
+                .refreshToken(refreshToken)
                 .build();
+    }
+
+
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
+        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+            return;
+        }
+        jwt = authHeader.substring(7);
+        var storedToken = tokenRepository.findByToken(jwt)
+                .orElse(null);
+        if (storedToken != null) {
+            storedToken.setExpired(true);
+            storedToken.setRevoked(true);
+            tokenRepository.save(storedToken);
+            SecurityContextHolder.clearContext();
+        }
+    }
+
+    private void saveUserToken(Usuario user, String jwtToken) {
+        var token = Token.builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
+    }
+
+    private void revokeAllUserTokens(Usuario user) {
+        var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
+        if (validUserTokens.isEmpty())
+            return;
+        validUserTokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(validUserTokens);
+    }
+
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String refreshToken;
+        final String userEmail;
+        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+            return;
+        }
+        refreshToken = authHeader.substring(7);
+        userEmail = jwtService.extractUserEmail(refreshToken);
+        if (userEmail != null) {
+
+            var user = usuarioRepository.findByEmail(userEmail).orElseThrow();
+
+            if (jwtService.isTokenValid(refreshToken, user)) {
+                var accessToken = jwtService.generateToken(user);
+                revokeAllUserTokens(user);
+                saveUserToken(user, accessToken);
+                var authResponse = AuthenticationResponse.builder()
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build();
+                new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+            }
+        }
     }
 }

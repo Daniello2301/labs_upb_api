@@ -48,7 +48,7 @@ public class Usuario implements Serializable, UserDetails {
     @Column( name = "password")
     String password;
 
-    @ManyToMany( fetch = FetchType.LAZY)
+    @ManyToMany( fetch = FetchType.EAGER)
     @JoinTable(name = "roles_usuarios",
             joinColumns = {@JoinColumn(name = "id_usuarios")},
             inverseJoinColumns = {@JoinColumn(name = "id_roles")})
@@ -62,7 +62,7 @@ public class Usuario implements Serializable, UserDetails {
     @Column(name = "fecha_creacion", nullable = false)
     LocalDateTime fechaCreacion;
 
-    @Column(name = "fecha_actualizacion", nullable = false)
+    @Column(name = "fecha_actualizacion")
     LocalDateTime fechaActualizacion;
 
 

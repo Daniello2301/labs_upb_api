@@ -1,10 +1,13 @@
 package co.edu.upb.labs_upb.service.iface;
 
+import co.edu.upb.labs_upb.dto.ChangePasswordReset;
 import co.edu.upb.labs_upb.dto.UsuarioDTO;
 import co.edu.upb.labs_upb.exception.RestException;
 import co.edu.upb.labs_upb.model.Usuario;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +35,7 @@ public interface IUsuarioService {
 
     public UsuarioDTO saveUser(UsuarioDTO user) throws RestException;
 
-
+    void changePassword(ChangePasswordReset request, Authentication connectedUser) throws RestException;
 
     public void deleteUser(Long id) throws RestException;
 

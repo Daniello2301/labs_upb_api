@@ -22,7 +22,7 @@ public class UsuarioConverter {
         usuario.setDocumento(usuarioDTO.getDocumento());
         usuario.setNombre(usuarioDTO.getNombre());
         usuario.setApellido(usuarioDTO.getApellido());
-        usuario.setEmail(usuarioDTO.getCorreo());
+        usuario.setEmail(usuarioDTO.getEmail());
         usuario.setPassword(usuarioDTO.getPassword());
         usuario.setFechaActualizacion(usuarioDTO.getFechaActualizacion());
         usuario.setFechaCreacion(usuarioDTO.getFechaCreacion());
@@ -37,7 +37,7 @@ public class UsuarioConverter {
         usuarioDTO.setDocumento(usuario.getDocumento());
         usuarioDTO.setNombre(usuario.getNombre());
         usuarioDTO.setApellido(usuario.getApellido());
-        usuarioDTO.setCorreo(usuario.getEmail());
+        usuarioDTO.setEmail(usuario.getEmail());
         usuarioDTO.setPassword(usuario.getPassword());
         usuarioDTO.setFechaCreacion(usuario.getFechaCreacion());
         usuarioDTO.setFechaActualizacion(usuario.getFechaActualizacion());
