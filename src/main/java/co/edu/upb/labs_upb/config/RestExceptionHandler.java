@@ -20,11 +20,22 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.List;
 
+
+/**
+ * A class to handle exceptions in REST API.
+ * It extends ResponseEntityExceptionHandler to provide centralized exception handling across all methods through @ControllerAdvice.
+ */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 
 
+    /**
+     * Handles general exceptions.
+     *
+     * @param e the exception
+     * @return the response entity
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorDto> getGeneralException(Exception e) {
@@ -34,6 +45,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorRq, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Handles internal server exceptions.
+     *
+     * @param e the exception
+     * @return the response entity
+     */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({InternalServerErrorException.class})
     public ResponseEntity<ErrorDto> getGeneralException(InternalServerErrorException e) {
@@ -41,15 +58,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(e.getErrorDto(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Handles not found exceptions.
+     *
+     * @param e the exception
+     * @return the response entity
+     */
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({NotFoundException.class})
-    public ResponseEntity<ErrorDto> getNotFoundRquest(NotFoundException e) {
+    public ResponseEntity<ErrorDto> getNotFoundRequest(NotFoundException e) {
         log.info(e.getMessage());
         return new ResponseEntity<>(e.getErrorDto(), HttpStatus.NOT_FOUND);
 
     }
 
 
+    /**
+     * Handles bad request exceptions.
+     *
+     * @param e the exception
+     * @return the response entity
+     */
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<ErrorDto> getBadRequestException(BadRequestException e) {
@@ -58,13 +87,22 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
 
+    /**
+     * Handles method argument not valid exceptions.
+     *
+     * @param ex the exception
+     * @param headers the headers
+     * @param status the status
+     * @param request the request
+     * @return the response entity
+     */
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
                                                                  HttpStatus status, WebRequest request) {
         BindingResult result = ex.getBindingResult();
         List<FieldError> fieldErrors = result.getFieldErrors();
         StringBuilder errorMessage = new StringBuilder();
 
-        if (fieldErrors != null && !fieldErrors.isEmpty()) {
+        if (!fieldErrors.isEmpty()) {
             errorMessage.append(fieldErrors.get(0).getDefaultMessage());
         } else {
             errorMessage.append("Ocurrio un error al procesar la solicitud. Por favor verifique e intente de nuevo.");
@@ -75,3 +113,4 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
 }
+s
