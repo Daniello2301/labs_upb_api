@@ -2,10 +2,9 @@ package co.edu.upb.labs_upb.controller;
 
 import co.edu.upb.labs_upb.dto.UsuarioDTO;
 import co.edu.upb.labs_upb.exception.BadRequestException;
-import co.edu.upb.labs_upb.exception.NotFoundException;
 import co.edu.upb.labs_upb.exception.RestException;
-import co.edu.upb.labs_upb.model.AuthenticationRequest;
-import co.edu.upb.labs_upb.model.AuthenticationResponse;
+import co.edu.upb.labs_upb.dto.AuthenticationRequest;
+import co.edu.upb.labs_upb.dto.AuthenticationResponse;
 import co.edu.upb.labs_upb.service.impl.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

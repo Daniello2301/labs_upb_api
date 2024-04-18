@@ -2,6 +2,8 @@ package co.edu.upb.labs_upb.service.impl;
 
 import co.edu.upb.labs_upb.auth.JwtService;
 import co.edu.upb.labs_upb.converter.UsuarioConverter;
+import co.edu.upb.labs_upb.dto.AuthenticationRequest;
+import co.edu.upb.labs_upb.dto.AuthenticationResponse;
 import co.edu.upb.labs_upb.dto.UsuarioDTO;
 import co.edu.upb.labs_upb.exception.ErrorDto;
 import co.edu.upb.labs_upb.exception.NotFoundException;
