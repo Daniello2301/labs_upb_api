@@ -4,6 +4,12 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * This class represents an Activo (Equipment) Data Transfer Object (DTO).
+ * DTOs are used to transfer data between different layers of an application.
+ * This specific DTO carries information about an asset in the system.
+ *
+ */
 @Data
 public class ActivoDTO {
 

@@ -2,6 +2,13 @@ package co.edu.upb.labs_upb.dto;
 
 import java.time.LocalDateTime;
 
+/**
+ * This class represents an Aula (Classroom) Data Transfer Object (DTO).
+ * DTOs are used to transfer data between different layers of an application.
+ * This specific DTO carries information about a classroom in the system.
+ *
+ *
+ */
 public class AulaDTO {
 
     private Long id;
@@ -14,6 +21,16 @@ public class AulaDTO {
     public AulaDTO() {
     }
 
+    /**
+     * Constructor for AulaDTO with all properties.
+     *
+     * @param id The unique identifier of the classroom.
+     * @param numero The classroom number.
+     * @param descripcion A description of the classroom.
+     * @param bloque The ID of the building block where the classroom is located.
+     * @param fechaCreacion The date and time the classroom information was created.
+     * @param fechaActualizacion The date and time the classroom information was last updated.
+     */
     public AulaDTO(Long id, Long numero, String descripcion, Long bloque, LocalDateTime fechaCreacion, LocalDateTime fechaActualizacion) {
         this.id = id;
         this.numero = numero;
