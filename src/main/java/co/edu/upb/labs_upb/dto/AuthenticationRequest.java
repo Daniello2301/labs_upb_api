@@ -1,4 +1,4 @@
-package co.edu.upb.labs_upb.model;
+package co.edu.upb.labs_upb.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

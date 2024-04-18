@@ -1,4 +1,4 @@
-package co.edu.upb.labs_upb.model;
+package co.edu.upb.labs_upb.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
