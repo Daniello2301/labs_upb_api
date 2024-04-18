@@ -15,6 +15,12 @@ import java.util.stream.Collectors;
 public class UsuarioConverter {
 
 
+    /**
+     * Method to convert a UsuarioDTO to a Usuario entity.
+     *
+     * @param usuarioDTO the UsuarioDTO to be converted.
+     * @return the converted Usuario entity.
+     */
     public  Usuario usuarioDtoToUsuario(UsuarioDTO usuarioDTO) {
         Usuario usuario = new Usuario();
         usuario.setId(usuarioDTO.getId());
@@ -30,6 +36,12 @@ public class UsuarioConverter {
         return usuario;
     }
 
+    /**
+     * Method to convert a Usuario entity to a UsuarioDTO.
+     *
+     * @param usuario the Usuario entity to be converted.
+     * @return the converted UsuarioDTO.
+     */
     public  UsuarioDTO usuarioToUsurioDTO(Usuario usuario){
         UsuarioDTO usuarioDTO = new UsuarioDTO();
         usuarioDTO.setId(usuario.getId());
