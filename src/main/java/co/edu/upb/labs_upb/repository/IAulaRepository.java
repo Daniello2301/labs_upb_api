@@ -8,11 +8,29 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 
+/**
+ * Repository interface for the Aula entity.
+ * This interface extends JpaRepository and provides methods for querying the Aula table.
+ */
 @Repository
 public interface IAulaRepository extends JpaRepository<Aula, Long>{
+
+    /**
+     * Finds Aulas by their numero.
+     *
+     * @param numero The numero of the Aula
+     * @return A list of Aula objects
+     */
     List<Aula> findByNumero(Long numero);
 
 
+    /**
+     * Finds an Aula by its numero and the idBloque of the associated Bloque.
+     *
+     * @param aula The numero of the Aula
+     * @param bloque The idBloque of the Bloque
+     * @return The Aula object
+     */
     @Query(nativeQuery = true,
     value = "SELECT " +
             "a.id_aula, " +

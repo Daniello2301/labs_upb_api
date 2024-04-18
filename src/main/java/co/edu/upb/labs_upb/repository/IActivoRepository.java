@@ -12,9 +12,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 
+
+/**
+ * Repository interface for the Activo entity.
+ * This interface extends JpaRepository and provides methods for querying the Activo table.
+ */
 @Repository
 public interface IActivoRepository extends JpaRepository<Activo, Long> {
 
+
+    /**
+     * Finds an Activo by numeroInventario numeroInventario.
+     *
+     * @param numeroInventario The numeroInventario of the Activo
+     * @return The Activo object
+     */
     Activo  findByNumeroInventario(String numeroInventario);
 
     /*
@@ -25,6 +37,13 @@ public interface IActivoRepository extends JpaRepository<Activo, Long> {
                     "WHERE a.estado = 1")
     Set<Activo> findAllEnable();
     */
+
+    /**
+     * Finds Activos by the idUpb of the associated Usuario.
+     *
+     * @param idUsuarioUpb The idUpb of the Usuario
+     * @return A set of Activo objects
+     */
     @Query(nativeQuery = true,
             value =
                     "SELECT " +
@@ -47,17 +66,38 @@ public interface IActivoRepository extends JpaRepository<Activo, Long> {
                     "WHERE u.id_upb = ?1")
     Set<Activo> findByUsuarioIdUpb(String idUsuarioUpb);
 
+
+    /**
+     * Finds Activos by their estado.
+     *
+     * @param estado The estado of the Activo
+     * @param pageable The pagination information
+     * @return A page of Activo objects
+     */
     @Query(nativeQuery = true,
             value = "SELECT * " +
                     "FROM Activos a " +
                     "WHERE a.estado = ?1")
     Page<Activo> finByEstado(boolean estado, Pageable pageable);
 
+    /**
+     * Finds Activos by the idPrestamo.
+     *
+     * @param idPrestamo The idPrestamo of the Activo
+     * @return A set of Activo objects
+     */
     @Query(nativeQuery = true,
             value = "SELECT * FROM activos a WHERE a.id_prestamo = ?1")
     Set<Activo> findByIdPrestamo(Long idPrestamo);
 
 
+
+    /**
+     * Updates the idPrestamo of an Activo by numeroInventario.
+     *
+     * @param idPrestamo The new idPrestamo
+     * @param numeroInventario The numeroInventario of the Activo
+     */
     @Modifying
     @Transactional
     @Query(nativeQuery = true,
