@@ -81,10 +81,25 @@ public class JwtService {
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
-    public String generateRefresToken(UserDetails userDetails){
+    /**
+     * Generates a refresh JWT token for the given user details.
+     *
+     * @param userDetails User details
+     * @return JWT token
+     */
+    public String generateRefreshToken(UserDetails userDetails){
         return buildToken(new HashMap<>(), userDetails, jwtRefreshExpiration);
     }
 
+
+    /**
+     * Builds a JWT token for the given user details, extra claims, and expiration time.
+     *
+     * @param extraClaims Extra claims
+     * @param userDetails User details
+     * @param expirationTime Expiration time
+     * @return JWT token
+     */
     public String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long expirationTime){
         return Jwts
                 .builder()

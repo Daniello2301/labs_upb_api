@@ -104,7 +104,7 @@ public class AuthenticationService implements LogoutHandler {
         // guardamos el usuario
 
         var  jwtToken = jwtService.generateToken(usuario);
-        var refreshToken = jwtService.generateRefresToken(usuario);
+        var refreshToken = jwtService.generateRefreshToken(usuario);
 
         var usuarioguardado = usuarioRepository.save(usuario);
 
@@ -137,7 +137,7 @@ public class AuthenticationService implements LogoutHandler {
 
 
         var  jwtToken = jwtService.generateToken(usuario);
-        var refreshToken = jwtService.generateRefresToken(usuario);
+        var refreshToken = jwtService.generateRefreshToken(usuario);
 
         revokeAllUserTokens(usuario);
         saveUserToken(usuario, jwtToken);
