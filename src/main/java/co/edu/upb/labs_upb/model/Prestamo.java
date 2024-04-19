@@ -9,12 +9,22 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+
+/**
+ * The Prestamo class represents a loan in the system.
+ * It is a JPA entity class; a table for this class will be created in the database.
+ * It uses Lombok annotations for boilerplate code reduction.
+ */
 @Entity
 @Table(name = "prestamos")
 @Data
 @FieldDefaults( level = AccessLevel.PRIVATE)
 public class Prestamo implements Serializable {
 
+    /**
+     * The unique ID of the loan.
+     * It is generated automatically when a loan is created.
+     */
     @Id
     @GeneratedValue( strategy = GenerationType.IDENTITY)
     @Column(name = "id_prestamo", nullable = false, unique = true)

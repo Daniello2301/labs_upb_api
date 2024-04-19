@@ -8,12 +8,22 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+
+/**
+ * The TipoActivo class represents an equipment type in the system.
+ * It is a JPA entity class; a table for this class will be created in the database.
+ * It uses Lombok annotations for boilerplate code reduction.
+ */
 @Entity
 @Data
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
 @Table(name = "tipos_activos")
 public class TipoActivo implements Serializable {
 
+    /**
+     * The unique ID of the asset type.
+     * It is generated automatically when an equipment type is created.
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tipo_activo")

@@ -12,6 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+
+/**
+ * The Rol class represents a role in the system.
+ * It is a JPA entity class; a table for this class will be created in the database.
+ * It uses Lombok annotations for boilerplate code reduction.
+ */
 @Entity
 @Table(name = "roles")
 @Data
@@ -28,24 +34,11 @@ public class Rol {
     @Column(name = "descripcion", nullable = false )
     private String descripcion;
 
-//    @ManyToMany(mappedBy = "roles")
-//    private List<Usuario> usuarios;
-
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion", nullable = false)
     private LocalDateTime fechaActualizacion;
 
-//    @Getter
-//    private final Set<Permission>  permissions;
-//
-//    public  List<SimpleGrantedAuthority> getAuthorities(){
-//        var authorities = getAuthorities()
-//                .stream()
-//                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
-//                .toList();
-//        return authorities;
-//    }
 
 }

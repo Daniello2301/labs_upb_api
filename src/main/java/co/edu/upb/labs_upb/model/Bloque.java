@@ -9,6 +9,12 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
+
+/**
+ * The Bloque class represents a block in the system.
+ * It is a JPA entity class; a table for this class will be created in the database.
+ * It uses Lombok annotations for boilerplate code reduction.
+ */
 @Data
 @Entity
 @Table(name = "bloques")
@@ -24,9 +30,6 @@ public class Bloque implements Serializable {
     Long numero;
 
     String descripcion;
-
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bloque", cascade  = CascadeType.REMOVE)
-//    List<Aula> aulas;
 
     @Column(name = "fecha_creacion", nullable = false)
     LocalDateTime fechaCreacion;
