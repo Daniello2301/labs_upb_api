@@ -22,6 +22,10 @@ import javax.swing.text.html.parser.Entity;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * ActivoImpl is a service class that implements the IActivoService interface.
+ * It provides methods for managing Activo objects, including CRUD operations and pagination.
+ */
 @Service
 public class ActivoImpl implements IActivoService {
 
@@ -43,6 +47,14 @@ public class ActivoImpl implements IActivoService {
     @Autowired
     private IUsuarioRepository usuarioRepository;
 
+    /**
+     * Retrieves a paginated list of ActivoDTO objects.
+     *
+     * @param numPage the number of the page to retrieve.
+     * @param sizePage the size of the page to retrieve.
+     * @return a Page of ActivoDTO objects.
+     * @throws RestException if an error occurs during the operation.
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<ActivoDTO> activosPagination(int numPage, int sizePage) throws RestException {
@@ -52,6 +64,15 @@ public class ActivoImpl implements IActivoService {
         return getActivos(pageable);
     }
 
+    /**
+     * Retrieves a map of Activo objects that are enabled, sorted by a specified attribute.
+     *
+     * @param page the number of the page to retrieve.
+     * @param size the size of the page to retrieve.
+     * @param sortby the attribute to sort the Activo objects by.
+     * @return a Map of Activo objects.
+     * @throws RestException if an error occurs during the operation.
+     */
     @Transactional(readOnly = true)
     public Map<String, Object> activosEnable(int page, int size, String sortby) throws RestException {
 
@@ -68,38 +89,36 @@ public class ActivoImpl implements IActivoService {
 
 
         List<ActivoDTO> activoDTOS = activosResponse.stream()
-                                    .map(activo -> activoConverter.convertToDTO(activo))
+                                    .map(activo -> {
+                                        try {
+                                            return toEntity(activo);
+                                        } catch (RestException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    })
                                     .toList();
 
-        for(Activo activo: activosResponse){
-            TipoActivo tipoActivo = tipoActivoRepository.findByNomenclatura(activo.getTipoActivo().getNomenclatura());
-            Aula aula = aulaRepository.findByNumeroInTheSameBloque(activo.getAula().getNumero(), activo.getBloque().getNumero());
-            Bloque bloque = bloqueRepository.findByNumero(activo.getBloque().getNumero());
-            Usuario usuario = usuarioRepository.findByIdUpb(activo.getUsuario().getIdUpb());
-
-            activoDTOS.forEach(activoDTO -> {
-                if(Objects.equals(activoDTO.getId(), activo.getId())){
-                    activoDTO.setTipoActivo(tipoActivo.getNomenclatura());
-                    activoDTO.setAula(aula.getNumero());
-                    activoDTO.setBloque(bloque.getNumero());
-                    activoDTO.setUsuario(usuario.getIdUpb());
-                }
-
-            });
-        }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("Items", activoDTOS);
-        response.put("currentPage", activosEncontrados.getNumber());
-        response.put("totalItems", activosEncontrados.getTotalElements());
-        response.put("totalPages", activosEncontrados.getTotalPages());
-        response.put("pageable", activosEncontrados.getPageable());
-        response.put("sort", activosEncontrados.getPageable().getSort());
+        Map<String, Object> ActivosResponse = new HashMap<>();
+        ActivosResponse.put("Items", activoDTOS);
+        ActivosResponse.put("currentPage", activosEncontrados.getNumber());
+        ActivosResponse.put("totalItems", activosEncontrados.getTotalElements());
+        ActivosResponse.put("totalPages", activosEncontrados.getTotalPages());
+        ActivosResponse.put("pageable", activosEncontrados.getPageable());
+        ActivosResponse.put("sort", activosEncontrados.getPageable().getSort());
 
 
-        return response;
+        return ActivosResponse;
     }
 
+    /**
+     * Retrieves a paginated and sorted list of ActivoDTO objects.
+     *
+     * @param numPage the number of the page to retrieve.
+     * @param sizePage the size of the page to retrieve.
+     * @param sortBy the attribute to sort the ActivoDTO objects by.
+     * @return a Page of ActivoDTO objects.
+     * @throws RestException if an error occurs during the operation.
+     */
     @Override
     @Transactional(readOnly = true)
     public Page<ActivoDTO> activosPaginationSortBy(int numPage, int sizePage, String sortBy) throws RestException {
@@ -107,43 +126,51 @@ public class ActivoImpl implements IActivoService {
 
         return getActivos(pageable);
     }
+
+
+    /**
+     * Retrieves all ActivoDTO objects.
+     *
+     * @return a List of ActivoDTO objects.
+     * @throws RestException if an error occurs during the operation.
+     */
     @Override
     @Transactional(readOnly = true)
     public List<ActivoDTO> getAll() throws RestException {
 
+        // Retrieve all 'Activo' entities from the database using 'activoRepository'
         List<Activo> activos = activoRepository.findAll();
+
+        // Check if the retrieved list is empty
         if(activos.isEmpty())
         {
+            // Throw a 'NotFoundException' if the list is empty
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     ConstUtil.MESSAGE_NOT_FOUND, HttpStatus.NOT_FOUND.value()));
         }
 
+
+        // Convert the list of 'Activo' entities to a list of 'ActivoDTO' objects using 'activoConverter'
         List<ActivoDTO> activoDTOS = activos.stream()
-                                    .map(activo -> activoConverter.convertToDTO(activo))
+                                    .map(activo -> {
+                                        try {
+                                            return toEntity(activo);
+                                        } catch (RestException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    })
                                     .toList();
-
-        for(Activo activo: activos)
-        {
-            TipoActivo tipoActivo = tipoActivoRepository.findByNomenclatura(activo.getTipoActivo().getNomenclatura());
-            Aula aula = aulaRepository.findByNumeroInTheSameBloque(activo.getAula().getNumero(), activo.getBloque().getNumero());
-            Bloque bloque = bloqueRepository.findByNumero(activo.getBloque().getNumero());
-            Usuario usuario = usuarioRepository.findByIdUpb(activo.getUsuario().getIdUpb());
-
-            activoDTOS.forEach(activoDTO -> {
-                if(Objects.equals(activoDTO.getId(), activo.getId())){
-                    activoDTO.setTipoActivo(tipoActivo.getNomenclatura());
-                    activoDTO.setAula(aula.getNumero());
-                    activoDTO.setBloque(bloque.getNumero());
-                    activoDTO.setUsuario(usuario.getIdUpb());
-                }
-
-            });
-
-        }
-
+        // Return the list of 'ActivoDTO' objects
         return activoDTOS;
     }
 
+    /**
+     * Retrieves all ActivoDTO objects associated with a specific user.
+     *
+     * @param numeroInventario the ID of the user.
+     * @return a Set of ActivoDTO objects.
+     * @throws RestException if an error occurs during the operation.
+     */
     @Override
     @Transactional(readOnly = true)
     public Set<ActivoDTO> getByUsuarioId(String numeroInventario) throws RestException {
@@ -190,21 +217,8 @@ public class ActivoImpl implements IActivoService {
                     ConstUtil.MESSAGE_NOT_FOUND, HttpStatus.NOT_FOUND.value()));
         }
 
-        ActivoDTO activoDTO = activoConverter.convertToDTO(activo);
+        ActivoDTO activoDTO = toEntity(activo);
 
-        TipoActivo tipoActivo = tipoActivoRepository.findByNomenclatura(activo.getTipoActivo().getNomenclatura());
-        validarBusqueda(tipoActivo);
-        Aula aula = aulaRepository.findByNumeroInTheSameBloque(activo.getAula().getNumero(), activo.getBloque().getNumero());
-        validarBusqueda(aula);
-        Bloque bloque = bloqueRepository.findByNumero(activo.getBloque().getNumero());
-        validarBusqueda(bloque);
-        Usuario usuario = usuarioRepository.findByIdUpb(activo.getUsuario().getIdUpb());
-        validarBusqueda(usuario);
-
-        activoDTO.setTipoActivo(tipoActivo.getNomenclatura());
-        activoDTO.setAula(aula.getNumero());
-        activoDTO.setBloque(bloque.getNumero());
-        activoDTO.setUsuario(usuario.getIdUpb());
 
         return activoDTO;
     }
@@ -300,6 +314,26 @@ public class ActivoImpl implements IActivoService {
         activoRepository.deleteById(id);
     }
 
+    private ActivoDTO toEntity(Activo activo) throws RestException {
+
+        ActivoDTO activoDTO = activoConverter.convertToDTO(activo);
+
+        TipoActivo tipoActivo = tipoActivoRepository.findByNomenclatura(activo.getTipoActivo().getNomenclatura());
+        validarBusqueda(tipoActivo);
+        Aula aula = aulaRepository.findByNumeroInTheSameBloque(activo.getAula().getNumero(), activo.getBloque().getNumero());
+        validarBusqueda(aula);
+        Bloque bloque = bloqueRepository.findByNumero(activo.getBloque().getNumero());
+        validarBusqueda(bloque);
+        Usuario usuario = usuarioRepository.findByIdUpb(activo.getUsuario().getIdUpb());
+        validarBusqueda(usuario);
+
+        activoDTO.setTipoActivo(tipoActivo.getNomenclatura());
+        activoDTO.setAula(aula.getNumero());
+        activoDTO.setBloque(bloque.getNumero());
+        activoDTO.setUsuario(usuario.getIdUpb());
+
+        return activoDTO;
+    }
     private void validarBusqueda(Object object) throws RestException {
         if(object == null)
         {
@@ -320,27 +354,17 @@ public class ActivoImpl implements IActivoService {
                     ConstUtil.MESSAGE_NOT_FOUND, HttpStatus.NOT_FOUND.value()));
         }
 
-        Page<ActivoDTO> activoDTOS = activos.map(activo -> activoConverter.convertToDTO(activo));
-
-        for(Activo activo: activos)
-        {
-            TipoActivo tipoActivo = tipoActivoRepository.findByNomenclatura(activo.getTipoActivo().getNomenclatura());
-            Aula aula = aulaRepository.findByNumeroInTheSameBloque(activo.getAula().getNumero(), activo.getBloque().getNumero());
-            Bloque bloque = bloqueRepository.findByNumero(activo.getBloque().getNumero());
-            Usuario usuario = usuarioRepository.findByIdUpb(activo.getUsuario().getIdUpb());
-
-            activoDTOS.forEach(activoDTO -> {
-                if(Objects.equals(activoDTO.getId(), activo.getId())){
-                    activoDTO.setTipoActivo(tipoActivo.getNomenclatura());
-                    activoDTO.setAula(aula.getNumero());
-                    activoDTO.setBloque(bloque.getNumero());
-                    activoDTO.setUsuario(usuario.getIdUpb());
-                }
-
-            });
-
-        }
+        Page<ActivoDTO> activoDTOS = activos.map(activo -> {
+            try {
+                return toEntity(activo);
+            } catch (RestException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         return activoDTOS;
     }
+
+
+
 }
