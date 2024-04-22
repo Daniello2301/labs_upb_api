@@ -58,6 +58,7 @@ public class SecurityConfig {
             "/prestamos/create",
             "/activos/enable/**",
             "/activos/pagination",
+            "/aulas/all",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
