@@ -18,6 +18,6 @@ public interface ITipoActivoRepository extends JpaRepository<TipoActivo, Long> {
      * @param nomenclatura the nomenclature of the TipoActivo entity to be searched.
      * @return the TipoActivo entity that matches the given nomenclature.
      */
-    public TipoActivo findByNomenclatura(String nomenclatura);
+    TipoActivo findByNomenclatura(String nomenclatura);
 
 }
