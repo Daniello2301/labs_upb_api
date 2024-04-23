@@ -11,8 +11,7 @@ import java.util.Optional;
  * It is annotated with @Repository to indicate that it's a Bean and its role is to interact with the database.
  */
 @Repository
-public interface IUsuarioRepository extends JpaRepository<Usuario, Long>
-{
+public interface IUsuarioRepository extends JpaRepository<Usuario, Long> {
     /**
      * Method to find a Usuario entity by its email.
      *

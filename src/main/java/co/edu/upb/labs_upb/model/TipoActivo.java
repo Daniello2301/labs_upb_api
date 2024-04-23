@@ -1,6 +1,13 @@
 package co.edu.upb.labs_upb.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.FetchType;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
@@ -20,6 +27,8 @@ import java.util.Set;
 @Table(name = "tipos_activos")
 public class TipoActivo implements Serializable {
 
+    private final int lengthNomenclatura = 50;
+    private final int lengthDescription = 200;
     /**
      * The unique ID of the asset type.
      * It is generated automatically when an equipment type is created.
@@ -27,20 +36,20 @@ public class TipoActivo implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_tipo_activo")
-    Long id;
+    private Long id;
 
-    @Column(name = "nomenclatura",length = 100, nullable = false, unique = true)
-    String nomenclatura;
+    @Column(name = "nomenclatura", length = lengthNomenclatura, nullable = false, unique = true)
+    private String nomenclatura;
 
-    @Column(name = "descripcion",length = 200)
-    String  descripcion;
+    @Column(name = "descripcion",  length = lengthDescription)
+    private String  descripcion;
 
     @Column(name = "fecha_creacion", updatable = false, nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    LocalDateTime fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion", nullable = false)
-    LocalDateTime fechaActualizacion;
+    private LocalDateTime fechaActualizacion;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "tipoActivo")
-    Set<Activo> activos;
+    private Set<Activo> activos;
 }

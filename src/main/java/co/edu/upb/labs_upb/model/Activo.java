@@ -1,6 +1,14 @@
 package co.edu.upb.labs_upb.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.CascadeType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -18,28 +26,28 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "activos")
 @Data
-@FieldDefaults( level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Activo implements Serializable {
 
     /**
      * Unique identifier for the Activo.
      */
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_activo", nullable = false, unique = true)
-    Long id;
+    private Long id;
 
     @Column(name = "numero_inventario", nullable = false, unique = true)
-    String numeroInventario;
+    private String numeroInventario;
 
     @Column(name = "serial", nullable = false, unique = true)
-    String serial;
+    private String serial;
 
-    String modelo;
+    private String modelo;
 
-    String descripcion;
+    private String descripcion;
 
-    Boolean estado;
+    private Boolean estado;
 
 
     /**
@@ -55,8 +63,8 @@ public class Activo implements Serializable {
      * @see TipoActivo (reference to the associated entity class)
      */
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
-    @JoinColumn( name = "id_tipo_activo")
-    TipoActivo tipoActivo;
+    @JoinColumn(name = "id_tipo_activo")
+    private TipoActivo tipoActivo;
 
 
     /**
@@ -72,8 +80,8 @@ public class Activo implements Serializable {
      * @see Prestamo (reference to the associated entity class)
      */
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
-    @JoinColumn( name = "id_prestamo")
-    Prestamo prestamo;
+    @JoinColumn(name = "id_prestamo")
+    private Prestamo prestamo;
 
 
     /**
@@ -89,8 +97,8 @@ public class Activo implements Serializable {
      * @see Aula (reference to the associated entity class)
      */
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
-    @JoinColumn( name = "id_aula")
-    Aula aula;
+    @JoinColumn(name = "id_aula")
+    private Aula aula;
 
 
     /**
@@ -106,8 +114,8 @@ public class Activo implements Serializable {
      * @see Bloque (reference to the associated entity class)
      */
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
-    @JoinColumn( name = "id_bloque")
-    Bloque bloque;
+    @JoinColumn(name = "id_bloque")
+    private Bloque bloque;
 
     /**
      * This field represents the user (Usuario) associated with the current entity.
@@ -122,16 +130,13 @@ public class Activo implements Serializable {
      * @see Usuario (reference to the associated entity class)
      */
     @ManyToOne(cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.PERSIST })
-    @JoinColumn( name = "id_usuario")
-    Usuario usuario;
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
 
     @Column(name = "fecha_creacion", nullable = false)
-    LocalDateTime fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion", nullable = false)
-    LocalDateTime fechaActualizacion;
+    private LocalDateTime fechaActualizacion;
 
-};
-
-
-;
+}

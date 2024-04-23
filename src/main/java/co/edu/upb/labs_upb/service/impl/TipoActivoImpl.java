@@ -42,7 +42,7 @@ public class TipoActivoImpl implements ITipoActivoService {
         // Find all TipoActivo objects in the database.
         List<TipoActivo> tiposEncontrados = tipoActivoRepository.findAll();
         // If no TipoActivo objects are found, throw a NotFoundException.
-        if(tiposEncontrados.isEmpty()){
+        if (tiposEncontrados.isEmpty()) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -70,7 +70,7 @@ public class TipoActivoImpl implements ITipoActivoService {
 
         // Find the TipoActivo object by its ID.
         TipoActivo tipoEncontrado = tipoActivoRepository.findById(id).orElse(null);
-        if(tipoEncontrado == null){
+        if (tipoEncontrado == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -95,7 +95,7 @@ public class TipoActivoImpl implements ITipoActivoService {
     public TipoActivoDTO findByNomenclatura(String nomenclatura) throws RestException {
 
         TipoActivo tipoEncontrado = tipoActivoRepository.findByNomenclatura(nomenclatura);
-        if(tipoEncontrado == null){
+        if (tipoEncontrado == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -119,7 +119,7 @@ public class TipoActivoImpl implements ITipoActivoService {
     public TipoActivoDTO saveTipoActivo(TipoActivoDTO tipoActivoDto) throws RestException {
 
         // If the TipoActivoDTO object is null, throw a BadRequestException.
-        if(tipoActivoDto == null){
+        if (tipoActivoDto == null) {
             throw new RestException(
                     ErrorDto.getErrorDto(
                             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -130,9 +130,9 @@ public class TipoActivoImpl implements ITipoActivoService {
         }
 
         // If the TipoActivoDTO object has an ID, check if it exists in the database.
-        if(tipoActivoDto.getId() != null){
+        if (tipoActivoDto.getId() != null) {
             boolean exist = tipoActivoRepository.existsById(tipoActivoDto.getId());
-            if(exist){
+            if (exist) {
                 // If the TipoActivoDTO object exists, update it.
                 TipoActivo tipoActivoActualizado = tipoActivoConverter.tipoActivoDTOToTipoActivo(tipoActivoDto);
                 return tipoActivoConverter.tipoActivoToTipoActivoDTO(tipoActivoRepository.save(tipoActivoActualizado));
@@ -141,7 +141,7 @@ public class TipoActivoImpl implements ITipoActivoService {
 
         // Check if a TipoActivo object with the same nomenclatura already exists in the database.
         TipoActivo tipoEncontrado = tipoActivoRepository.findByNomenclatura(tipoActivoDto.getNomenclatura());
-        if(tipoEncontrado != null){
+        if (tipoEncontrado != null) {
             throw new BadRequestException(
                     ErrorDto.getErrorDto(
                             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -173,7 +173,7 @@ public class TipoActivoImpl implements ITipoActivoService {
 
             // Find the TipoActivo object by its ID.
             TipoActivo tipoEncontrado = tipoActivoRepository.findById(id).orElse(null);
-            if(tipoEncontrado == null){
+            if (tipoEncontrado == null) {
                 throw new NotFoundException(
                         ErrorDto.getErrorDto(
                                 HttpStatus.NOT_FOUND.getReasonPhrase(),

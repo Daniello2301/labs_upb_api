@@ -15,11 +15,7 @@ import co.edu.upb.labs_upb.service.iface.IUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,9 +24,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -87,7 +85,7 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
 
         List<Usuario> usuarios = usuarioRepository.findAll();
 
-        if(usuarios.isEmpty()){
+        if (usuarios.isEmpty()) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -99,9 +97,9 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
 
         List<UsuarioDTO> usuariosDTO = usuarios.stream().map(usuario -> usuarioConverter.usuarioToUsurioDTO(usuario)).collect(Collectors.toList());
 
-        for(Usuario usuario : usuarios){
-            for(UsuarioDTO usuarioDTO : usuariosDTO){
-                if(usuario.getId().equals(usuarioDTO.getId())){
+        for (Usuario usuario : usuarios) {
+            for (UsuarioDTO usuarioDTO : usuariosDTO) {
+                if (usuario.getId().equals(usuarioDTO.getId())) {
                     usuarioDTO.setRoles(usuario.getRoles().stream().map(rol -> rol.getNombre()).collect(Collectors.toSet()));
                 }
             }
@@ -140,7 +138,7 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
 
         Usuario usuario = usuarioRepository.findById(id).orElse(null);
 
-        if(usuario == null){
+        if (usuario == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -166,7 +164,7 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
     public UsuarioDTO saveUser(UsuarioDTO userDTO) throws RestException {
 
         // Validamos que si se pase un usuaro en la peticion
-        if(userDTO == null){
+        if (userDTO == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -179,7 +177,7 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
         // Se busca usuario por documento si no existe
         Usuario existByDocument = usuarioRepository.findByDocumento(userDTO.getDocumento());
         // Se confirma que no exista un usuario con el mismo documento
-        if((existByDocument != null) && (userDTO.getId() == null)){
+        if ((existByDocument != null) && (userDTO.getId() == null)) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.ALREADY_REPORTED.getReasonPhrase(),
@@ -196,7 +194,7 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
 
         // Se mapean los roles de la lista de string del usuario DTO a una lista tipo Rol para el usuario entity
         Set<Rol> roles = new HashSet<>();
-        for(String rol : userDTO.getRoles()) {
+        for (String rol : userDTO.getRoles()) {
             Rol rol1 = rolRepository.findByNombre(rol);
             if (rol1 == null) {
                 throw new NotFoundException(
@@ -228,7 +226,7 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
 
             var usuario = (Usuario) connectedUser.getPrincipal();
 
-            if(!passwordEncoder.matches(request.getCurrentPassword(), usuario.getPassword())){
+            if (!passwordEncoder.matches(request.getCurrentPassword(), usuario.getPassword())) {
                 throw new BadRequestException(
                         ErrorDto.getErrorDto(
                                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -238,8 +236,7 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
                 );
             }
 
-            if(!request.getNewPassword().equals(request.getConfirmationPassword()))
-            {
+            if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
                 throw new BadRequestException(
                         ErrorDto.getErrorDto(
                                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -260,13 +257,11 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
      */
     @Override
     public void deleteUser(Long id) throws RestException {
-        try{
+        try {
 
             Usuario usuarioDtoEncontrado = usuarioRepository.findById(id).orElse(null);
 
-            // TODO: set disable estate user
-
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -288,8 +283,7 @@ public class UsuarioImpl implements UserDetailsService, IUsuarioService {
     public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
 
         Optional<Usuario> usuario = usuarioRepository.findByEmail(correo);
-        if(usuario.isEmpty())
-        {
+        if (usuario.isEmpty()) {
             throw new UsernameNotFoundException("Error in login with credential " + correo);
         }
 

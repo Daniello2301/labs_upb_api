@@ -1,8 +1,20 @@
 package co.edu.upb.labs_upb.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.FetchType;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,33 +32,31 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults( level = AccessLevel.PRIVATE)
 public class Usuario implements Serializable, UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column( name = "id_usuario", nullable = false)
-    Long id;
+    @Column(name = "id_usuario", nullable = false)
+    private Long id;
 
-    @Column( name = "id_upb", nullable = false, unique = true)
-    Long idUpb;
+    @Column(name = "id_upb", nullable = false, unique = true)
+    private Long idUpb;
 
-    @Column( name = "documento_identificacion", nullable = false, unique = true)
-    Long documento;
+    @Column(name = "documento_identificacion", nullable = false, unique = true)
+    private Long documento;
 
-    @Column( nullable = false, length = 100)
-    String nombre;
+    @Column(nullable = false)
+    private String nombre;
 
-    Boolean enable;
+    private Boolean enable;
 
-    @Column(length = 100)
-    String apellido;
+    private String apellido;
 
-    @Column( nullable = false, unique = true)
-    String email;
+    @Column(nullable = false, unique = true)
+    private String email;
 
-    @Column( name = "password")
-    String password;
+    @Column(name = "password")
+    private String password;
 
     /**
      * This annotation defines a many-to-many relationship between a user entity and its associated roles.
@@ -68,18 +78,18 @@ public class Usuario implements Serializable, UserDetails {
      *   - inverseJoinColumns: Defines the column(s) in the join table that reference the Rol entity.
      *     - id_roles: In this example, it references the role's ID.
      */
-    @ManyToMany( fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "roles_usuarios",
             joinColumns = {@JoinColumn(name = "id_usuarios")},
             inverseJoinColumns = {@JoinColumn(name = "id_roles")})
-    Set<Rol> roles;
+    private Set<Rol> roles;
 
 
     @Column(name = "fecha_creacion", nullable = false)
-    LocalDateTime fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion")
-    LocalDateTime fechaActualizacion;
+    private LocalDateTime fechaActualizacion;
 
 
 

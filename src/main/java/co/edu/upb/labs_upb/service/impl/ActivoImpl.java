@@ -5,11 +5,18 @@ import co.edu.upb.labs_upb.dto.ActivoDTO;
 import co.edu.upb.labs_upb.exception.ErrorDto;
 import co.edu.upb.labs_upb.exception.NotFoundException;
 import co.edu.upb.labs_upb.exception.RestException;
-import co.edu.upb.labs_upb.model.*;
-import co.edu.upb.labs_upb.repository.*;
+import co.edu.upb.labs_upb.model.Activo;
+import co.edu.upb.labs_upb.model.Aula;
+import co.edu.upb.labs_upb.model.Bloque;
+import co.edu.upb.labs_upb.model.TipoActivo;
+import co.edu.upb.labs_upb.model.Usuario;
+import co.edu.upb.labs_upb.repository.IActivoRepository;
+import co.edu.upb.labs_upb.repository.IAulaRepository;
+import co.edu.upb.labs_upb.repository.IBloqueRepository;
+import co.edu.upb.labs_upb.repository.ITipoActivoRepository;
+import co.edu.upb.labs_upb.repository.IUsuarioRepository;
 import co.edu.upb.labs_upb.service.iface.IActivoService;
 import co.edu.upb.labs_upb.utilities.ConstUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,8 +26,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.parser.Entity;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -90,10 +99,10 @@ public class ActivoImpl implements IActivoService {
         }
 
         // Get the content of the page
-        List<Activo> activosResponse = activosEncontrados.getContent();
+        List<Activo> response = activosEncontrados.getContent();
 
         // Convert the list of Activo objects to a list of ActivoDTO objects
-        List<ActivoDTO> activoDTOS = activosResponse.stream()
+        List<ActivoDTO> activoDTOS = response.stream()
                 .map(activo -> {
                     try {
                         return toEntity(activo);
@@ -104,16 +113,16 @@ public class ActivoImpl implements IActivoService {
                 .toList();
 
         // Create a map to hold the response
-        Map<String, Object> ActivosResponse = new HashMap<>();
-        ActivosResponse.put("Items", activoDTOS);
-        ActivosResponse.put("currentPage", activosEncontrados.getNumber());
-        ActivosResponse.put("totalItems", activosEncontrados.getTotalElements());
-        ActivosResponse.put("totalPages", activosEncontrados.getTotalPages());
-        ActivosResponse.put("pageable", activosEncontrados.getPageable());
-        ActivosResponse.put("sort", activosEncontrados.getPageable().getSort());
+        Map<String, Object> activosResponse = new HashMap<>();
+        activosResponse.put("Items", activoDTOS);
+        activosResponse.put("currentPage", activosEncontrados.getNumber());
+        activosResponse.put("totalItems", activosEncontrados.getTotalElements());
+        activosResponse.put("totalPages", activosEncontrados.getTotalPages());
+        activosResponse.put("pageable", activosEncontrados.getPageable());
+        activosResponse.put("sort", activosEncontrados.getPageable().getSort());
 
 
-        return ActivosResponse;
+        return activosResponse;
     }
 
     /**

@@ -46,23 +46,18 @@ public interface IActivoRepository extends JpaRepository<Activo, Long> {
      */
     @Query(nativeQuery = true,
             value =
-                    "SELECT " +
-                        "a.id_activo, " +
-                        "a.numero_inventario, " +
-                        "a.descripcion, " +
-                        "a.serial, " +
-                        "a.modelo, " +
-                        "a.estado, "+
-                        "a.id_aula, " +
-                        "a.id_usuario, " +
-                        "a.id_tipo_activo, " +
-                        "a.id_bloque, " +
-                        "a.id_prestamo, " +
-                        "a.fecha_actualizacion,"+
-                        "a.fecha_creacion "+
-                    "FROM Activos a " +
-                    "INNER JOIN Usuarios u " +
-                    "ON a.id_usuario = u.id_usuario " +
+                    "SELECT "
+                            +
+                        "a.id_activo, a.numero_inventario, a.descripcion, a.serial, a.modelo, a.estado, a.id_aula, "
+                            +
+                        "a.id_usuario, a.id_tipo_activo, a.id_bloque, a.id_prestamo, a.fecha_actualizacion, a.fecha_creacion "
+                            +
+                    "FROM Activos a "
+                            +
+                    "INNER JOIN Usuarios u "
+                            +
+                    "ON a.id_usuario = u.id_usuario "
+                            +
                     "WHERE u.id_upb = ?1")
     Set<Activo> findByUsuarioIdUpb(String idUsuarioUpb);
 
@@ -75,9 +70,7 @@ public interface IActivoRepository extends JpaRepository<Activo, Long> {
      * @return A page of Activo objects
      */
     @Query(nativeQuery = true,
-            value = "SELECT * " +
-                    "FROM Activos a " +
-                    "WHERE a.estado = ?1")
+            value = "SELECT * FROM Activos a WHERE a.estado = ?1")
     Page<Activo> finByEstado(boolean estado, Pageable pageable);
 
     /**
@@ -101,6 +94,6 @@ public interface IActivoRepository extends JpaRepository<Activo, Long> {
     @Modifying
     @Transactional
     @Query(nativeQuery = true,
-    value ="UPDATE activos a SET a.id_prestamo = ?1 WHERE a.numero_inventario = ?2")
+    value = "UPDATE activos a SET a.id_prestamo = ?1 WHERE a.numero_inventario = ?2")
     void updatePrestamo(Long idPrestamo, String numeroInventario);
 }

@@ -3,7 +3,6 @@ package co.edu.upb.labs_upb.auth;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -87,7 +86,7 @@ public class JwtService {
      * @param userDetails User details
      * @return JWT token
      */
-    public String generateRefreshToken(UserDetails userDetails){
+    public String generateRefreshToken(UserDetails userDetails) {
         return buildToken(new HashMap<>(), userDetails, jwtRefreshExpiration);
     }
 
@@ -100,7 +99,7 @@ public class JwtService {
      * @param expirationTime Expiration time
      * @return JWT token
      */
-    public String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long expirationTime){
+    public String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long expirationTime) {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

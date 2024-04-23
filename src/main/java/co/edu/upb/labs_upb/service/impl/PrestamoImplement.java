@@ -1,17 +1,15 @@
 package co.edu.upb.labs_upb.service.impl;
 
-import co.edu.upb.labs_upb.converter.ActivoConverter;
 import co.edu.upb.labs_upb.converter.PrestamoConverter;
-import co.edu.upb.labs_upb.dto.ActivoDTO;
 import co.edu.upb.labs_upb.dto.PrestamoDTO;
 import co.edu.upb.labs_upb.exception.ErrorDto;
 import co.edu.upb.labs_upb.exception.InternalServerErrorException;
 import co.edu.upb.labs_upb.exception.NotFoundException;
 import co.edu.upb.labs_upb.exception.RestException;
-import co.edu.upb.labs_upb.model.*;
+import co.edu.upb.labs_upb.model.Activo;
+import co.edu.upb.labs_upb.model.Prestamo;
 import co.edu.upb.labs_upb.repository.IActivoRepository;
 import co.edu.upb.labs_upb.repository.IPrestamoRepository;
-import co.edu.upb.labs_upb.service.iface.IActivoService;
 import co.edu.upb.labs_upb.service.iface.IPrestamoService;
 import co.edu.upb.labs_upb.utilities.ConstUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +18,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.HashMap;
 
 /**
  * PrestamoImplement is a service class that implements the IPrestamoService interface.
@@ -44,12 +46,6 @@ public class PrestamoImplement implements IPrestamoService {
     @Autowired
     private PrestamoConverter prestamoConverter;
 
-    @Autowired
-    private ActivoConverter activoConverter;
-
-    @Autowired
-    private IActivoService activoService;
-
     /**
      * Retrieves all PrestamoDTO objects.
      *
@@ -64,9 +60,9 @@ public class PrestamoImplement implements IPrestamoService {
         List<Prestamo> prestamos = prestamoRepository.findAll();
 
         // If no Prestamo objects are found, throw an exception.
-        if(prestamos.isEmpty()){
+        if (prestamos.isEmpty()) {
             throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
-                    ConstUtil.MESSAGE_NOT_FOUND,
+                    ConstUtil.MESSAGE_ERROR_DATA,
                     HttpStatus.NOT_FOUND.value()));
         }
 
@@ -74,14 +70,14 @@ public class PrestamoImplement implements IPrestamoService {
         List<PrestamoDTO> prestamosDTO = new ArrayList<>();
 
         // Convert each Prestamo object to a PrestamoDTO object and add it to the list.
-        for(Prestamo prestamo : prestamos){
+        for (Prestamo prestamo : prestamos) {
             PrestamoDTO prestamoDTO = prestamoConverter.entityToDto(prestamo);
 
             // Create a set to store the activos of the Prestamo object.
             Set<String> activos = new HashSet<>();
 
             // For each prestamo, we get the activos.
-            for(Activo activo : prestamo.getActivos()){
+            for (Activo activo : prestamo.getActivos()) {
                 // add the numero Inventario of the activo to the setActivos.
                 activos.add(activo.getNumeroInventario());
             }
@@ -107,7 +103,7 @@ public class PrestamoImplement implements IPrestamoService {
     @Override
     @Transactional(readOnly = true)
     public PrestamoDTO getById(Long id) throws RestException {
-        if(id  == null){
+        if (id  == null) {
             throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                     ConstUtil.MESSAGE_ERROR_DATA,
                     HttpStatus.INTERNAL_SERVER_ERROR.value()));
@@ -115,7 +111,7 @@ public class PrestamoImplement implements IPrestamoService {
 
         // Find by id the prestamo object.
         Prestamo prestamo = prestamoRepository.findById(id).orElse(null);
-        if(prestamo == null){
+        if (prestamo == null) {
             throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     "El prestamo con el id " + id + " no existe",
                     HttpStatus.NOT_FOUND.value()));
@@ -131,7 +127,7 @@ public class PrestamoImplement implements IPrestamoService {
         Set<String> activos = new HashSet<>();
 
         // Foreach activo get numeroInventario and add to activos set.
-        for(Activo activo : activosByPrestamo){
+        for (Activo activo : activosByPrestamo) {
             activos.add(activo.getNumeroInventario());
         }
 
@@ -150,7 +146,7 @@ public class PrestamoImplement implements IPrestamoService {
      */
     @Override
     public PrestamoDTO getByNumeroPrestamo(Long numeroPrestamo) throws RestException {
-        if(numeroPrestamo  == null){
+        if (numeroPrestamo  == null) {
             throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                     ConstUtil.MESSAGE_ERROR_DATA,
                     HttpStatus.INTERNAL_SERVER_ERROR.value()));
@@ -158,7 +154,7 @@ public class PrestamoImplement implements IPrestamoService {
 
         // Find by id the prestamo object.
         Prestamo prestamoFounded = prestamoRepository.findByNumeroPrestamo(numeroPrestamo);
-        if(prestamoFounded == null){
+        if (prestamoFounded == null) {
             throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     "El prestamo con el id " + numeroPrestamo + " no existe",
                     HttpStatus.NOT_FOUND.value()));
@@ -174,7 +170,7 @@ public class PrestamoImplement implements IPrestamoService {
         Set<String> activos = new HashSet<>();
 
         // Foreach activo get numeroInventario and add to activos set.
-        for(Activo activo : activosByPrestamo){
+        for (Activo activo : activosByPrestamo) {
             activos.add(activo.getNumeroInventario());
         }
 
@@ -194,17 +190,16 @@ public class PrestamoImplement implements IPrestamoService {
      * @throws RestException if an error occurs during the operation.
      */
     @Override
-    public Map<String, Object> prestamosEnable(int page, int size,String sortby) throws RestException {
+    public Map<String, Object> prestamosEnable(int page, int size, String sortby) throws RestException {
 
         // Create a Pageable object to store the paging information.
         Pageable paging = PageRequest.of(page, size).withSort(Sort.by(Sort.Direction.ASC, sortby));
 
         // Find all Prestamo objects that are enabled.
         Page<Prestamo> prestamoEncontrados = prestamoRepository.finByEstado(true, paging);
-        if(prestamoEncontrados.isEmpty())
-        {
+        if (prestamoEncontrados.isEmpty()) {
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
-                    ConstUtil.MESSAGE_NOT_FOUND, HttpStatus.NOT_FOUND.value()));
+                    ConstUtil.MESSAGE_ERROR_DATA, HttpStatus.NOT_FOUND.value()));
         }
 
         //get content from page prestamo response.
@@ -240,7 +235,7 @@ public class PrestamoImplement implements IPrestamoService {
     @Override
     public PrestamoDTO create(PrestamoDTO prestamoDTO) throws RestException {
 
-        if(prestamoDTO == null){
+        if (prestamoDTO == null) {
              throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                      ConstUtil.MESSAGE_ERROR_DATA,
                      HttpStatus.INTERNAL_SERVER_ERROR.value()));
@@ -250,9 +245,9 @@ public class PrestamoImplement implements IPrestamoService {
         Prestamo prestamoConvertido = prestamoConverter.dtoToEntity(prestamoDTO);
 
         // if prestamoDTO has an id, we check if the prestamo exists, and update;
-        if(prestamoDTO.getId() != null){
+        if (prestamoDTO.getId() != null) {
             boolean exist = prestamoRepository.existsById(prestamoDTO.getId());
-            if(exist){
+            if (exist) {
                 return prestamoConverter.entityToDto(prestamoRepository.save(prestamoConvertido));
             }
         }
@@ -261,10 +256,10 @@ public class PrestamoImplement implements IPrestamoService {
         Prestamo prestamoNuevo = prestamoRepository.save(prestamoConvertido);
 
         // for each activo in prestamoDTO, we check if the activo exists, and update;
-        for(String activo : prestamoDTO.getActivos()){
-            if(activo != null){
+        for (String activo : prestamoDTO.getActivos()) {
+            if (activo != null) {
                 Activo activoEncontrado = activoRepository.findByNumeroInventario(activo);
-                if(activoEncontrado == null){
+                if (activoEncontrado == null) {
                     throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                             "El activo con el numero de inventario " + activo + " no existe",
                             HttpStatus.INTERNAL_SERVER_ERROR.value()));
@@ -298,14 +293,14 @@ public class PrestamoImplement implements IPrestamoService {
 
         // find prestamo by id.
         Prestamo prestamo = prestamoRepository.findById(id).orElse(null);
-        if(prestamo == null ){
+        if (prestamo == null) {
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     "El prestamo con el id " + id + " no existe",
                     HttpStatus.NOT_FOUND.value()));
         }
 
         // check if prestamo is closed.
-        if(!prestamo.getEstado()){
+        if (!prestamo.getEstado()) {
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     "El prestamo con el id " + id + " ya fue cerrado",
                     HttpStatus.NOT_FOUND.value()));
@@ -313,7 +308,7 @@ public class PrestamoImplement implements IPrestamoService {
 
         // find activo by numeroInventario.
         Activo activo = activoRepository.findByNumeroInventario(numeroInventario);
-        if(activo == null){
+        if (activo == null) {
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     "El activo con el numero de inventario " + numeroInventario + " no existe",
                     HttpStatus.NOT_FOUND.value()));
@@ -334,7 +329,7 @@ public class PrestamoImplement implements IPrestamoService {
 
         // find prestamo by id.
         Prestamo prestamo = prestamoRepository.findById(id).orElse(null);
-        if(prestamo == null){
+        if (prestamo == null) {
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     "El prestamo con el id " + id + " no existe",
                     HttpStatus.NOT_FOUND.value()));

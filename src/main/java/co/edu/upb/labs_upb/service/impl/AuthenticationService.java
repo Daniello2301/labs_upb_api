@@ -8,7 +8,10 @@ import co.edu.upb.labs_upb.dto.UsuarioDTO;
 import co.edu.upb.labs_upb.exception.ErrorDto;
 import co.edu.upb.labs_upb.exception.NotFoundException;
 import co.edu.upb.labs_upb.exception.RestException;
-import co.edu.upb.labs_upb.model.*;
+import co.edu.upb.labs_upb.model.Rol;
+import co.edu.upb.labs_upb.model.Token;
+import co.edu.upb.labs_upb.model.Usuario;
+import co.edu.upb.labs_upb.model.TokenType;
 import co.edu.upb.labs_upb.repository.IRolRepository;
 import co.edu.upb.labs_upb.repository.IUsuarioRepository;
 import co.edu.upb.labs_upb.service.iface.ITokenRepository;
@@ -56,7 +59,7 @@ public class AuthenticationService implements LogoutHandler {
     public AuthenticationResponse register(UsuarioDTO userDTO) throws RestException {
 
         // Validamos que si se pase un usuaro en la peticion
-        if(userDTO == null){
+        if (userDTO == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -69,7 +72,7 @@ public class AuthenticationService implements LogoutHandler {
         // Se busca usuario por documento si no e
         Usuario existByDocument = usuarioRepository.findByDocumento(userDTO.getDocumento());
         // Se confirma que no exista un usuario con el mismo documento
-        if((existByDocument != null) && (userDTO.getId() == null)){
+        if ((existByDocument != null) && (userDTO.getId() == null)) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.ALREADY_REPORTED.getReasonPhrase(),
@@ -87,7 +90,7 @@ public class AuthenticationService implements LogoutHandler {
 
         // Se mapean los roles de la lista de string del usuario DTO a una lista tipo Rol para el usuario entity
         Set<Rol> roles = new HashSet<>();
-        for(String rol : userDTO.getRoles()) {
+        for (String rol : userDTO.getRoles()) {
             Rol rol1 = rolRepository.findByNombre(rol);
             if (rol1 == null) {
                 throw new NotFoundException(
@@ -115,7 +118,7 @@ public class AuthenticationService implements LogoutHandler {
         userDTO.setId(usuario.getId());
 
 
-        System.out.println(userDTO+ " "+jwtToken);
+        System.out.println(userDTO + " " + jwtToken);
 
         return AuthenticationResponse.builder()
                 .id(usuario.getIdUpb())
@@ -158,10 +161,11 @@ public class AuthenticationService implements LogoutHandler {
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        final int startIndex = 7;
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
-        jwt = authHeader.substring(7);
+        jwt = authHeader.substring(startIndex);
         var storedToken = tokenRepository.findByToken(jwt)
                 .orElse(null);
         if (storedToken != null) {
@@ -185,8 +189,9 @@ public class AuthenticationService implements LogoutHandler {
 
     private void revokeAllUserTokens(Usuario user) {
         var validUserTokens = tokenRepository.findAllValidTokenByUser(user.getId());
-        if (validUserTokens.isEmpty())
+        if (validUserTokens.isEmpty()) {
             return;
+        }
         validUserTokens.forEach(token -> {
             token.setExpired(true);
             token.setRevoked(true);
@@ -198,10 +203,11 @@ public class AuthenticationService implements LogoutHandler {
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
-        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        final int startIndex = 7;
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
         }
-        refreshToken = authHeader.substring(7);
+        refreshToken = authHeader.substring(startIndex);
         userEmail = jwtService.extractUserEmail(refreshToken);
         if (userEmail != null) {
 

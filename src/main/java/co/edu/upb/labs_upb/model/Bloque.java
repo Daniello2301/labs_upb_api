@@ -1,13 +1,17 @@
 package co.edu.upb.labs_upb.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 /**
@@ -18,22 +22,22 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "bloques")
-@FieldDefaults( level = AccessLevel.PRIVATE)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Bloque implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_bloque", nullable = false)
-    Long id;
+    private Long id;
 
     @Column(name = "numero_bloque", nullable = false, unique = true)
-    Long numero;
+    private Long numero;
 
-    String descripcion;
+    private String descripcion;
 
     @Column(name = "fecha_creacion", nullable = false)
-    LocalDateTime fechaCreacion;
+    private LocalDateTime fechaCreacion;
 
     @Column(name = "fecha_actualizacion", nullable = false)
-    LocalDateTime fechaActualizacion;
+    private LocalDateTime fechaActualizacion;
 }

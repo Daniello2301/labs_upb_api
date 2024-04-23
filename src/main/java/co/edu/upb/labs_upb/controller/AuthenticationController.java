@@ -33,7 +33,7 @@ public class AuthenticationController {
             usuarioDTO.setFechaCreacion(now);
 
             return ResponseEntity.ok().body(authenticationService.register(usuarioDTO));
-        }catch (BadRequestException ex) {
+        } catch (BadRequestException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getErrorDto());
         }
 
@@ -41,7 +41,7 @@ public class AuthenticationController {
 
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse>  login(@RequestBody AuthenticationRequest authRequest){
+    public ResponseEntity<AuthenticationResponse>  login(@RequestBody AuthenticationRequest authRequest) {
 
         return ResponseEntity.ok().body(authenticationService.login(authRequest));
     }

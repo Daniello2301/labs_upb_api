@@ -103,11 +103,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.1.2</version>
-                <configuration>
-                    <configLocation>config/checkstyle.xml</configLocation>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>true</failsOnError>
-                </configuration>
                 <executions>
                     <execution>
                         <id>validate</id>
@@ -117,6 +112,28 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <configLocation>${basedir}/config/checkstyle.xml</configLocation>
+                    <encoding>UTF-8</encoding>
+                    <consoleOutput>true</consoleOutput>
+                    <failsOnError>true</failsOnError>
+                    <linkXRef>false</linkXRef>
+                    <failsOnError>true</failsOnError>
+                    <failOnViolation>true</failOnViolation>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                    <logViolationsToConsole>true</logViolationsToConsole>
+                    <format>html</format>
+                    <excludes>
+                        com/omernaci/checkstyleexample/CheckstyleExampleApplication.java
+                    </excludes>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>9.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

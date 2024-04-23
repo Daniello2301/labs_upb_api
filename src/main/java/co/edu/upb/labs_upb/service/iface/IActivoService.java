@@ -2,8 +2,6 @@ package co.edu.upb.labs_upb.service.iface;
 
 import co.edu.upb.labs_upb.dto.ActivoDTO;
 import co.edu.upb.labs_upb.exception.RestException;
-import co.edu.upb.labs_upb.model.Activo;
-import co.edu.upb.labs_upb.model.Usuario;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -89,6 +87,6 @@ public interface IActivoService {
      *
      * @param id the ID of the ActivoDTO to delete.
      */
-    void deleteById(Long id) ;
+    void deleteById(Long id);
 
 }

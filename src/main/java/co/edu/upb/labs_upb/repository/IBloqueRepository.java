@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
  * This interface extends JpaRepository and provides methods for querying the Bloque table.
  */
 @Repository
-public interface IBloqueRepository extends JpaRepository<Bloque, Long>{
+public interface IBloqueRepository extends JpaRepository<Bloque, Long> {
 
     /**
      * Finds a Bloque by its numero.
@@ -18,5 +18,5 @@ public interface IBloqueRepository extends JpaRepository<Bloque, Long>{
      * @param numero The numero of the Bloque
      * @return The Bloque object
      */
-    public Bloque findByNumero(Long numero);
+    Bloque findByNumero(Long numero);
 }

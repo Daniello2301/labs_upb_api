@@ -17,14 +17,18 @@ public class TipoActivoConverter {
      * @param tipoActivo the TipoActivo entity to be converted.
      * @return the converted TipoActivoDTO.
      */
-    public TipoActivoDTO tipoActivoToTipoActivoDTO(co.edu.upb.labs_upb.model.TipoActivo tipoActivo){
+    public TipoActivoDTO tipoActivoToTipoActivoDTO(co.edu.upb.labs_upb.model.TipoActivo tipoActivo) {
+
         TipoActivoDTO tipoActivoDTO = new TipoActivoDTO();
+
         tipoActivoDTO.setId(tipoActivo.getId());
         tipoActivoDTO.setNomenclatura(tipoActivo.getNomenclatura());
         tipoActivoDTO.setDescripcion(tipoActivo.getDescripcion());
         tipoActivoDTO.setFechaCreacion(tipoActivo.getFechaCreacion());
         tipoActivoDTO.setFechaActualizacion(tipoActivo.getFechaActualizacion());
+
         return tipoActivoDTO;
+
     }
 
 
@@ -34,14 +38,18 @@ public class TipoActivoConverter {
      * @param tipoActivoDTO the TipoActivoDTO to be converted.
      * @return the converted TipoActivo entity.
      */
-    public TipoActivo tipoActivoDTOToTipoActivo(TipoActivoDTO tipoActivoDTO){
+    public TipoActivo tipoActivoDTOToTipoActivo(TipoActivoDTO tipoActivoDTO) {
+
         TipoActivo tipoActivo = new TipoActivo();
+
         tipoActivo.setId(tipoActivoDTO.getId());
         tipoActivo.setNomenclatura(tipoActivoDTO.getNomenclatura());
         tipoActivo.setDescripcion(tipoActivoDTO.getDescripcion());
         tipoActivo.setFechaCreacion(tipoActivoDTO.getFechaCreacion());
         tipoActivo.setFechaActualizacion(tipoActivoDTO.getFechaActualizacion());
+
         return tipoActivo;
+
     }
 
 

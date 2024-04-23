@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -113,7 +112,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("*"));
         config.setAllowedMethods(Arrays.asList("POST", "GET", "DELETE", "PUT", "PATCH", "OPTIONS"));
-        config.setAllowCredentials(true);//permitir credenciales
+        config.setAllowCredentials(true); //permitir credenciales
         config.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
@@ -130,7 +129,7 @@ public class SecurityConfig {
     public FilterRegistrationBean<CorsFilter> corsFilter() {
         FilterRegistrationBean<CorsFilter> bean =
                 new FilterRegistrationBean<>(new CorsFilter(configurationSource()));
-        bean.setOrder(Ordered.HIGHEST_PRECEDENCE);// dar un orden bajo: entre más bajo el orden, mayor la precedencia
+        bean.setOrder(Ordered.HIGHEST_PRECEDENCE); // dar un orden bajo: entre más bajo el orden, mayor la precedencia
         // como es el filtro más alto es sufiente para aplicar a todos los controllers
         return bean;
     }

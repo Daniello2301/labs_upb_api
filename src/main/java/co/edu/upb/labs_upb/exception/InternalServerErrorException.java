@@ -10,7 +10,7 @@ import java.io.Serial;
  * This class extends RestException and is used when the server encounters an unexpected condition that prevents it from fulfilling the request.
  */
 @Getter
-public class InternalServerErrorException extends RestException{
+public class InternalServerErrorException extends RestException {
 
     /**
      * Serial version UID for serialization and deserialization.

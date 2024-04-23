@@ -7,13 +7,13 @@ import co.edu.upb.labs_upb.model.Usuario;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 public interface IUsuarioService {
 
-    /* ******************** User Pagintacion And Sort ******************************************* */
+    /* ******************** User Pagination And Sort ******************************************* */
+
     Page<Usuario> usersPagination(int numPage, int sizePage) throws RestException;
 
     //Sort by
@@ -25,19 +25,21 @@ public interface IUsuarioService {
 
     // CRUD methods
 
-
     Optional<Usuario> findByUsername(String username);
 
-    public List<UsuarioDTO> findAllUsers() throws RestException;
 
-    public UsuarioDTO findByCorreo(String correo) throws RestException;
-    public UsuarioDTO findUserById(Long id) throws RestException;
+    List<UsuarioDTO> findAllUsers() throws RestException;
 
-    public UsuarioDTO saveUser(UsuarioDTO user) throws RestException;
+
+    UsuarioDTO findByCorreo(String correo) throws RestException;
+
+    UsuarioDTO findUserById(Long id) throws RestException;
+
+    UsuarioDTO saveUser(UsuarioDTO user) throws RestException;
 
     void changePassword(ChangePasswordReset request, Authentication connectedUser) throws RestException;
 
-    public void deleteUser(Long id) throws RestException;
+    void deleteUser(Long id) throws RestException;
 
 
 }

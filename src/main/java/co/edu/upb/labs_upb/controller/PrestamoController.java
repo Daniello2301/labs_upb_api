@@ -1,19 +1,25 @@
 package co.edu.upb.labs_upb.controller;
 
 import co.edu.upb.labs_upb.dto.PrestamoDTO;
-import co.edu.upb.labs_upb.exception.*;
-import co.edu.upb.labs_upb.model.Activo;
-import co.edu.upb.labs_upb.model.Prestamo;
-import co.edu.upb.labs_upb.repository.IActivoRepository;
-import co.edu.upb.labs_upb.repository.IPrestamoRepository;
-import co.edu.upb.labs_upb.service.iface.IActivoService;
+import co.edu.upb.labs_upb.exception.NotFoundException;
+import co.edu.upb.labs_upb.exception.BadRequestException;
+import co.edu.upb.labs_upb.exception.ErrorDto;
+import co.edu.upb.labs_upb.exception.InternalServerErrorException;
+import co.edu.upb.labs_upb.exception.RestException;
 import co.edu.upb.labs_upb.service.iface.IPrestamoService;
-import co.edu.upb.labs_upb.utilities.ConstUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -43,9 +49,9 @@ public class PrestamoController {
     public ResponseEntity<Object> getAll() throws RestException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(prestamoService.getAll());
-        } catch (InternalServerErrorException ex){
+        } catch (InternalServerErrorException ex)  {
             throw ex;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     ex.getMessage(),
                     HttpStatus.NOT_FOUND.value()));
@@ -68,7 +74,7 @@ public class PrestamoController {
     public ResponseEntity<Object> prestamosPagination(@PathVariable int numPage, @PathVariable int sizePage, @PathVariable String sortby) throws RestException {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(prestamoService.prestamosEnable(numPage, sizePage, sortby));
-        } catch (InternalServerErrorException ex){
+        } catch (InternalServerErrorException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
@@ -88,9 +94,9 @@ public class PrestamoController {
         try {
             PrestamoDTO prestamoDTO = prestamoService.getById(id);
             return ResponseEntity.status(HttpStatus.OK).body(prestamoDTO);
-        } catch (NotFoundException ex){
+        } catch (NotFoundException ex) {
             throw ex;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     ex.getMessage(),
                     HttpStatus.NOT_FOUND.value()));
@@ -111,9 +117,9 @@ public class PrestamoController {
         try {
             PrestamoDTO prestamoDTO = prestamoService.getByNumeroPrestamo(numeroPrestamo);
             return ResponseEntity.status(HttpStatus.OK).body(prestamoDTO);
-        } catch (NotFoundException ex){
+        } catch (NotFoundException ex) {
             throw ex;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new NotFoundException(ErrorDto.getErrorDto(HttpStatus.NOT_FOUND.getReasonPhrase(),
                     ex.getMessage(),
                     HttpStatus.NOT_FOUND.value()));
@@ -141,9 +147,9 @@ public class PrestamoController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(prestamoGuardado);
 
-        } catch (BadRequestException ex){
+        } catch (BadRequestException ex) {
             throw ex;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             throw new BadRequestException(ErrorDto.getErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                     ex.getMessage(),
                     HttpStatus.BAD_REQUEST.value()));
@@ -191,9 +197,9 @@ public class PrestamoController {
 
             return ResponseEntity.status(HttpStatus.OK).body(prestamoService.create(prestamoEncontrado));
 
-        } catch (BadRequestException ex){
+        } catch (BadRequestException ex) {
             throw ex;
-        }catch (Exception ex){
+        }  catch (Exception ex)  {
             throw new BadRequestException(ErrorDto.getErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                     ex.getMessage(),
                     HttpStatus.BAD_REQUEST.value()));
@@ -232,7 +238,7 @@ public class PrestamoController {
             response.put("Prestamo modificado: ", idPrestamo.toString());
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
-        }catch (BadRequestException ex){
+        } catch (BadRequestException ex)  {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
@@ -252,7 +258,7 @@ public class PrestamoController {
         try {
 
             PrestamoDTO prestamoDTO = prestamoService.getById(id);
-            if (prestamoDTO == null){
+            if (prestamoDTO == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Prestamo no encontrado");
             }
 
@@ -265,7 +271,7 @@ public class PrestamoController {
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
 
-        } catch (BadRequestException ex){
+        } catch (BadRequestException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
 

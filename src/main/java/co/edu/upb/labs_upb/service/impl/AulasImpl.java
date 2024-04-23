@@ -46,11 +46,10 @@ public class AulasImpl implements IAulaService {
     @Transactional(readOnly = true)
     public List<AulaDTO> findAllAulas() throws RestException {
 
-        try{
-
+        try {
             // Retrieve all Aula objects
             List<Aula> aulas = aulaRepository.findAll();
-            if(aulas.isEmpty()){
+            if (aulas.isEmpty()) {
                 throw new NotFoundException(
                         ErrorDto.getErrorDto(
                                 HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -66,7 +65,7 @@ public class AulasImpl implements IAulaService {
                     .collect(Collectors.toList());
 
             // Retrieve all Bloque objects
-            for(Aula aula : aulas){
+            for (Aula aula : aulas) {
                 /*
                 * Retrieve the Bloque object associated with the Aula object
                 * and set the Bloque number to the AulaDTO object.
@@ -75,12 +74,13 @@ public class AulasImpl implements IAulaService {
                 aulasDto.stream()
                         .filter(aulaDto -> aulaDto.getId().equals(aula.getId()))
                         .forEach(aulaDto -> aulaDto.setBloque(bloque.getNumero()));
+
             }
 
             // return the list of AulaDTO objects
             return aulasDto;
 
-        }catch (Exception e){
+        } catch (Exception e)  {
             throw new InternalServerErrorException(
                     ErrorDto.getErrorDto(
                             HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
@@ -106,7 +106,7 @@ public class AulasImpl implements IAulaService {
         Aula aula = aulaRepository.findById(id).orElse(null);
 
         // Check if exists
-        if(aula == null){
+        if (aula == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -143,7 +143,7 @@ public class AulasImpl implements IAulaService {
         List<Aula> aulas = aulaRepository.findByNumero(numero);
 
         // check if exists
-        if(aulas.isEmpty()){
+        if (aulas.isEmpty()) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -161,7 +161,7 @@ public class AulasImpl implements IAulaService {
         /*
         * For each aula founded we verify if the bloque exists
         * */
-        for(Aula aula : aulas) {
+        for (Aula aula : aulas) {
             Bloque bloque = bloqueRepository.findByNumero(aula.getBloque().getNumero());
             if (bloque == null) {
                 throw new NotFoundException(
@@ -193,7 +193,7 @@ public class AulasImpl implements IAulaService {
     public AulaDTO saveAula(AulaDTO aulaDto) throws RestException {
 
         // Validate if the aulaDto is null
-        if(aulaDto == null){
+        if (aulaDto == null) {
             throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.BAD_REQUEST.getReasonPhrase(),
                     ConstUtil.MESSAGE_ERROR_DATA,
                     HttpStatus.INTERNAL_SERVER_ERROR.value()));
@@ -201,7 +201,7 @@ public class AulasImpl implements IAulaService {
 
         // Find and validate fi bloque exists
         Bloque bloqueTemp = bloqueRepository.findByNumero(aulaDto.getBloque());
-        if(bloqueTemp == null){
+        if (bloqueTemp == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -212,9 +212,9 @@ public class AulasImpl implements IAulaService {
         }
 
         // If aulaDto object has an ID, update the existing Aula object
-        if(aulaDto.getId() != null){
+        if (aulaDto.getId() != null) {
             boolean exist = aulaRepository.existsById(aulaDto.getId());
-            if(exist){
+            if (exist) {
                 Aula aulaActualizada = aulasConverter.aulaDTOToAula(aulaDto);
                 aulaActualizada.setBloque(bloqueTemp);
                 return aulasConverter.aulaToAulaDTO(aulaRepository.save(aulaActualizada));
@@ -223,7 +223,7 @@ public class AulasImpl implements IAulaService {
 
         // Validate if aula exists in the bloque before saving
         Aula aulaExistsInBloque = aulaRepository.findByNumeroInTheSameBloque(aulaDto.getNumero(), aulaDto.getBloque());
-        if(aulaExistsInBloque != null){
+        if (aulaExistsInBloque != null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -239,9 +239,7 @@ public class AulasImpl implements IAulaService {
 
         // Save the new Aula object
         newAula = aulaRepository.save(newAula);
-        
         aulaDto.setId(newAula.getId());
-
 
         return aulaDto;
     }
@@ -260,7 +258,7 @@ public class AulasImpl implements IAulaService {
         Aula aulaEncontrado = aulaRepository.findById(id).orElse(null);
 
         // verify if aula exists
-        if(aulaEncontrado == null){
+        if (aulaEncontrado == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),

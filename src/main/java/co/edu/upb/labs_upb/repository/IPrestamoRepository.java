@@ -1,6 +1,5 @@
 package co.edu.upb.labs_upb.repository;
 
-import co.edu.upb.labs_upb.model.Activo;
 import co.edu.upb.labs_upb.model.Prestamo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,9 +37,7 @@ public interface IPrestamoRepository extends JpaRepository<Prestamo, Long> {
      * @return A page of Prestamo objects
      */
     @Query(nativeQuery = true,
-            value = "SELECT * " +
-                    "FROM Prestamos p " +
-                    "WHERE p.estado = ?1")
+            value = "SELECT * FROM Prestamos p WHERE p.estado = ?1")
     Page<Prestamo> finByEstado(boolean estado, Pageable pageable);
 
     /**

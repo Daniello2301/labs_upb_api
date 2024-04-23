@@ -13,7 +13,7 @@ import java.util.List;
  * This interface extends JpaRepository and provides methods for querying the Aula table.
  */
 @Repository
-public interface IAulaRepository extends JpaRepository<Aula, Long>{
+public interface IAulaRepository extends JpaRepository<Aula, Long> {
 
     /**
      * Finds Aulas by their numero.
@@ -32,16 +32,16 @@ public interface IAulaRepository extends JpaRepository<Aula, Long>{
      * @return The Aula object
      */
     @Query(nativeQuery = true,
-    value = "SELECT " +
-            "a.id_aula, " +
-            "a.numero_aula, " +
-            "a.descripcion, " +
-            "a.fecha_creacion, " +
-            "a.fecha_actualizacion, " +
-            "a.id_bloque " +
-            "FROM aulas a " +
-            "INNER JOIN bloques b " +
-            "ON a.id_bloque = b.id_bloque " +
+    value = "SELECT "
+            +
+            "a.id_aula, a.numero_aula, a.descripcion, a.fecha_creacion, a.fecha_actualizacion, a.id_bloque "
+            +
+            "FROM aulas a "
+            +
+            "INNER JOIN bloques b "
+            +
+            "ON a.id_bloque = b.id_bloque "
+            +
             "WHERE a.numero_aula = (?1) AND b.id_bloque = (?2)")
     Aula findByNumeroInTheSameBloque(Long aula, Long bloque);
 

@@ -12,7 +12,7 @@ import java.io.Serial;
  */
 @Setter
 @Getter
-public class RestException extends Exception{
+public class RestException extends Exception {
 
     /**
      * Serial version UID for serialization and deserialization.

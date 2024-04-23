@@ -1,15 +1,9 @@
 package co.edu.upb.labs_upb.converter;
 
 import co.edu.upb.labs_upb.dto.UsuarioDTO;
-import co.edu.upb.labs_upb.model.Rol;
 import co.edu.upb.labs_upb.model.Usuario;
-import co.edu.upb.labs_upb.repository.IRolRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class UsuarioConverter {
@@ -22,7 +16,9 @@ public class UsuarioConverter {
      * @return the converted Usuario entity.
      */
     public  Usuario usuarioDtoToUsuario(UsuarioDTO usuarioDTO) {
+
         Usuario usuario = new Usuario();
+
         usuario.setId(usuarioDTO.getId());
         usuario.setIdUpb(usuarioDTO.getIdUpb());
         usuario.setDocumento(usuarioDTO.getDocumento());
@@ -34,6 +30,7 @@ public class UsuarioConverter {
         usuario.setFechaCreacion(usuarioDTO.getFechaCreacion());
 
         return usuario;
+
     }
 
     /**
@@ -42,8 +39,10 @@ public class UsuarioConverter {
      * @param usuario the Usuario entity to be converted.
      * @return the converted UsuarioDTO.
      */
-    public  UsuarioDTO usuarioToUsurioDTO(Usuario usuario){
+    public  UsuarioDTO usuarioToUsurioDTO(Usuario usuario) {
+
         UsuarioDTO usuarioDTO = new UsuarioDTO();
+
         usuarioDTO.setId(usuario.getId());
         usuarioDTO.setIdUpb(usuario.getIdUpb());
         usuarioDTO.setDocumento(usuario.getDocumento());
@@ -55,5 +54,6 @@ public class UsuarioConverter {
         usuarioDTO.setFechaActualizacion(usuario.getFechaActualizacion());
 
         return usuarioDTO;
+
     }
 }

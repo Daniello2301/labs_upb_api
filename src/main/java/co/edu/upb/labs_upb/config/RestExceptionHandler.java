@@ -27,7 +27,7 @@ import java.util.List;
  */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
-    private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestExceptionHandler.class);
 
 
     /**
@@ -39,7 +39,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ErrorDto> getGeneralException(Exception e) {
-        log.error(e.getMessage(), e);
+        LOGGER.error(e.getMessage(), e);
         ErrorDto errorRq = ErrorDto.getErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), e.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ResponseEntity<>(errorRq, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -54,7 +54,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({InternalServerErrorException.class})
     public ResponseEntity<ErrorDto> getGeneralException(InternalServerErrorException e) {
-        log.error(e.getMessage(), e);
+        LOGGER.error(e.getMessage(), e);
         return new ResponseEntity<>(e.getErrorDto(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -67,7 +67,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<ErrorDto> getNotFoundRequest(NotFoundException e) {
-        log.info(e.getMessage());
+        LOGGER.info(e.getMessage());
         return new ResponseEntity<>(e.getErrorDto(), HttpStatus.NOT_FOUND);
 
     }
@@ -82,7 +82,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<ErrorDto> getBadRequestException(BadRequestException e) {
-        log.info(e.getErrorDto().getMessage());
+        LOGGER.info(e.getErrorDto().getMessage());
         return new ResponseEntity<>(e.getErrorDto(), HttpStatus.BAD_REQUEST);
     }
 

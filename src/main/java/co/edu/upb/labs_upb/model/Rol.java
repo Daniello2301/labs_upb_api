@@ -1,16 +1,14 @@
 package co.edu.upb.labs_upb.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
 import lombok.Data;
-import lombok.Getter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.io.Serializable;
-import java.security.Permission;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -23,15 +21,17 @@ import java.util.Set;
 @Data
 public class Rol {
 
+    private final int length = 100;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_rol", nullable = false)
     private Long id;
 
-    @Column(name = "nombre", nullable = false, length = 100, unique = true)
+    @Column(name = "nombre", nullable = false, length = length, unique = true)
     private String nombre;
 
-    @Column(name = "descripcion", nullable = false )
+    @Column(name = "descripcion", nullable = false)
     private String descripcion;
 
     @Column(name = "fecha_creacion", nullable = false)

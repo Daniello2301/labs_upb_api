@@ -1,9 +1,15 @@
 package co.edu.upb.labs_upb.model;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.CascadeType;
 import lombok.Data;
-import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -18,7 +24,6 @@ import java.util.Set;
 @Entity
 @Table(name = "prestamos")
 @Data
-@FieldDefaults( level = AccessLevel.PRIVATE)
 public class Prestamo implements Serializable {
 
     /**
@@ -26,40 +31,40 @@ public class Prestamo implements Serializable {
      * It is generated automatically when a loan is created.
      */
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_prestamo", nullable = false, unique = true)
-    Long id;
+    private Long id;
 
     @Column(name = "numero_prestamo", nullable = false, unique = true)
-    Long numeroPrestamo;
+    private Long numeroPrestamo;
 
     @Column(name = "fecha_salida", nullable = false)
-    LocalDateTime fechaSalida;
+    private LocalDateTime fechaSalida;
 
     @Column(name = "fecha_entrega")
-    LocalDateTime fechaEntrega;
+    private LocalDateTime fechaEntrega;
 
-    String laboratorio;
+    private String laboratorio;
 
     @Column(name = "centro_costos", nullable = false)
-    String centroCostos;
+    private String centroCostos;
 
-    String facultad;
+    private String facultad;
 
-    Boolean estado;
+    private Boolean estado;
 
     @Column(name = "id_persona", nullable = false)
-    String  idPersona;
+    private String  idPersona;
 
     @Column(name = "nombre_persona", nullable = false)
-    String nombrePersona;
+    private String nombrePersona;
 
-    @Column( name = "fecha_creacion", nullable = false)
-    LocalDateTime fechaCreacion;
+    @Column(name = "fecha_creacion", nullable = false)
+    private LocalDateTime fechaCreacion;
 
-    @Column( name = "fecha_actualizacion", nullable = false)
-    LocalDateTime fechaActualizacion;
+    @Column(name = "fecha_actualizacion", nullable = false)
+    private LocalDateTime fechaActualizacion;
 
-    @OneToMany( fetch = FetchType.LAZY, mappedBy = "prestamo", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    Set<Activo> activos;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "prestamo", cascade = { CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    private Set<Activo> activos;
 }

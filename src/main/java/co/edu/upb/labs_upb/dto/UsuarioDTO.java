@@ -1,11 +1,8 @@
 package co.edu.upb.labs_upb.dto;
 
-import co.edu.upb.labs_upb.model.Rol;
 import lombok.Data;
-import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 

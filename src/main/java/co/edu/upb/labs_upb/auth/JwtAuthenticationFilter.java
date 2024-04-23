@@ -8,8 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import jakarta.transaction.TransactionScoped;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.lang.NonNull;
@@ -56,6 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
+        final int bearerLength = 7;
 
         // Check if the Authorization header is valid and have the Bearer prefix
         if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
@@ -63,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        jwt = authHeader.substring(7);
+        jwt = authHeader.substring(bearerLength);
         userEmail = jwtService.extractUserEmail(jwt);
 
         // If the user email is not empty and the authentication is null, validate the token
@@ -72,10 +71,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
             var isTokenValid = tokenRepository.findByToken(jwt)
-                    .map(t -> !t.expired && !t.revoked)
+                    .map(t -> !t.isExpired() && !t.isRevoked())
                     .orElse(false);
 
-            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid){
+            if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

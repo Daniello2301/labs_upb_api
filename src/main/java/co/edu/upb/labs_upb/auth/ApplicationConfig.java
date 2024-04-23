@@ -30,7 +30,7 @@ public class ApplicationConfig {
      * @return UserDetailsService
      */
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         return username -> usuarioRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found"));
     }
@@ -40,7 +40,7 @@ public class ApplicationConfig {
      * @return AuthenticationProvider
      */
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         authProvider.setUserDetailsService(userDetailsService());

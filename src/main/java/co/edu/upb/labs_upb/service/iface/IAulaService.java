@@ -2,7 +2,6 @@ package co.edu.upb.labs_upb.service.iface;
 
 import co.edu.upb.labs_upb.dto.AulaDTO;
 import co.edu.upb.labs_upb.exception.RestException;
-import co.edu.upb.labs_upb.model.Aula;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public interface IAulaService {
      * @return a List of AulaDTO objects.
      * @throws RestException if an error occurs during the operation.
      */
-    public List<AulaDTO> findAllAulas() throws RestException;
+    List<AulaDTO> findAllAulas() throws RestException;
 
     /**
      * Retrieves an AulaDTO object by its ID.
@@ -29,7 +28,7 @@ public interface IAulaService {
      * @return an AulaDTO object.
      * @throws RestException if an error occurs during the operation.
      */
-    public AulaDTO findAulaById(Long id) throws RestException;
+    AulaDTO findAulaById(Long id) throws RestException;
 
     /**
      * Retrieves AulaDTO objects by their number.
@@ -47,7 +46,7 @@ public interface IAulaService {
      * @return the created AulaDTO object.
      * @throws RestException if an error occurs during the operation.
      */
-    public AulaDTO saveAula(AulaDTO aula) throws RestException;
+    AulaDTO saveAula(AulaDTO aula) throws RestException;
 
     /**
      * Deletes an AulaDTO object by its ID.
@@ -55,6 +54,6 @@ public interface IAulaService {
      * @param id the ID of the AulaDTO to delete.
      * @throws RestException if an error occurs during the operation.
      */
-    public void deleteAula(Long id) throws RestException;
+    void deleteAula(Long id) throws RestException;
 
 }
