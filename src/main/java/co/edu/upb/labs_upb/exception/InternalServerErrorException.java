@@ -2,9 +2,6 @@ package co.edu.upb.labs_upb.exception;
 
 
 import lombok.Getter;
-
-import java.io.Serial;
-
 /**
  * Exception class for handling internal server errors.
  * This class extends RestException and is used when the server encounters an unexpected condition that prevents it from fulfilling the request.
@@ -12,11 +9,7 @@ import java.io.Serial;
 @Getter
 public class InternalServerErrorException extends RestException {
 
-    /**
-     * Serial version UID for serialization and deserialization.
-     */
-    @Serial
-    private static final long serialVersionUID = 1L;
+
 
     /**
      * Error code associated with the exception.

@@ -5,6 +5,7 @@ package co.edu.upb.labs_upb.exception;
  * This class extends RestException and is used when a client sends a request that the server cannot or will not process.
  */
 public class BadRequestException extends RestException { //4xx
+
     private static final long serialVersionUID = 1L;
 
     /**

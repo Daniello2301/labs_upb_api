@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * TipoActivoImpl is a service class that implements the ITipoActivoService interface.
@@ -55,7 +56,7 @@ public class TipoActivoImpl implements ITipoActivoService {
         // Convert the TipoActivo objects to TipoActivoDTO objects and return them.
         return tiposEncontrados.stream()
                 .map(tipo -> tipoActivoConverter.tipoActivoToTipoActivoDTO(tipo))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     /**

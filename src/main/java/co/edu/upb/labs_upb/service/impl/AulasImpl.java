@@ -156,7 +156,7 @@ public class AulasImpl implements IAulaService {
         // convert Aula to DTO entity
         List<AulaDTO> aulasDto = aulas.stream()
                 .map(aula -> aulasConverter.aulaToAulaDTO(aula))
-                .toList();
+                .collect(Collectors.toList());
 
         /*
         * For each aula founded we verify if the bloque exists

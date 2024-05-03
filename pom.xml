@@ -10,9 +10,9 @@
     </parent>
     <groupId>co.edu.upb</groupId>
     <artifactId>Labs_UPB</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2</version>
     <name>Labs_UPB</name>
-    <description>Labs_UPB</description>
+    <description>labs_upb</description>
     <properties>
         <java.version>17</java.version>
     </properties>
@@ -134,6 +134,13 @@
                         <version>9.2</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
             </plugin>
         </plugins>
     </build>

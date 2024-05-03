@@ -109,8 +109,7 @@ public class ActivoImpl implements IActivoService {
                     } catch (RestException e) {
                         throw new RuntimeException(e);
                     }
-                })
-                .toList();
+                }).collect(Collectors.toList());
 
         // Create a map to hold the response
         Map<String, Object> activosResponse = new HashMap<>();
@@ -173,8 +172,7 @@ public class ActivoImpl implements IActivoService {
                     } catch (RestException e) {
                         throw new RuntimeException(e);
                     }
-                })
-                .toList();
+                }).collect(Collectors.toList());
     }
 
     /**

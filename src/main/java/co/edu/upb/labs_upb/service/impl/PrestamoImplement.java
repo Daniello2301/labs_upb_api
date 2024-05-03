@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 /**
  * PrestamoImplement is a service class that implements the IPrestamoService interface.
@@ -209,7 +210,7 @@ public class PrestamoImplement implements IPrestamoService {
         // convert to DTO the prestamo objects.
         List<PrestamoDTO> prestamosDTO = prestamosResponse.stream()
                 .map(prestamo -> prestamoConverter.entityToDto(prestamo))
-                .toList();
+                .collect(Collectors.toList());
 
 
         // create map response

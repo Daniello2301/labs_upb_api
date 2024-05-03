@@ -3,8 +3,6 @@ package co.edu.upb.labs_upb.exception;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.Serial;
-
 
 /**
  * Exception class for handling REST exceptions.
@@ -13,12 +11,6 @@ import java.io.Serial;
 @Setter
 @Getter
 public class RestException extends Exception {
-
-    /**
-     * Serial version UID for serialization and deserialization.
-     */
-    @Serial
-    private static final long serialVersionUID = 1L;
 
     /**
      * ErrorDto object associated with the exception.
