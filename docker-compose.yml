@@ -6,7 +6,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_DIALECT: org.hibernate.dialect.MySQL8Dialect
+        DB_DIALECT: org.hibernate.dialect.MySQL8Dialect
       DB_PASSWORD: root
       DB_URL: jdbc:mysql://10.38.32.138:3306/lab_upb?createDataBaseIfNotExist&serverTimezone=America/Bogota
       DB_USER_NAME: root

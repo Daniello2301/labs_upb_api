@@ -3,6 +3,7 @@ package co.edu.upb.labs_upb.service.iface;
 import co.edu.upb.labs_upb.dto.ActivoDTO;
 import co.edu.upb.labs_upb.exception.RestException;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,8 @@ public interface IActivoService {
      * @throws RestException if an error occurs during the operation.
      */
     ActivoDTO create(ActivoDTO activoDTO) throws RestException;
+
+
 
     /**
      * Deletes an ActivoDTO object by its ID.

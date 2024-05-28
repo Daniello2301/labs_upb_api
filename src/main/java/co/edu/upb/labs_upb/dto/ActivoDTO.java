@@ -1,6 +1,7 @@
 package co.edu.upb.labs_upb.dto;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 

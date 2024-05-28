@@ -8,6 +8,7 @@ import co.edu.upb.labs_upb.exception.ErrorDto;
 import co.edu.upb.labs_upb.exception.InternalServerErrorException;
 import co.edu.upb.labs_upb.exception.RestException;
 import co.edu.upb.labs_upb.model.Usuario;
+import co.edu.upb.labs_upb.repository.IImagenActivo;
 import co.edu.upb.labs_upb.service.iface.IActivoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,16 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +36,8 @@ public class ActivoController {
 
     @Autowired
     private IActivoService activoService;
+
+    private IImagenActivo imagenActivoRepository;
 
     /**
      * Retrieves a paginated list of ActivoDTO objects.
@@ -147,7 +144,9 @@ public class ActivoController {
     @PostMapping("/create")
     @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN')")
-    public ResponseEntity<Object> create(@RequestBody ActivoDTO activoDTO, Authentication authentication) throws RestException {
+    public ResponseEntity<Object>
+        create(@RequestBody ActivoDTO activoDTO, Authentication authentication)
+            throws RestException {
 
         try {
 
@@ -155,12 +154,23 @@ public class ActivoController {
 
             Usuario usuarioLogueado = (Usuario) authentication.getPrincipal();
 
+            if(!usuarioLogueado.getEnable()){
+                throw new BadRequestException(
+                        ErrorDto.getErrorDto(
+                                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                "Usuario deshabilitado",
+                                HttpStatus.BAD_REQUEST.value()
+                        )
+                );
+            }
+
             activoDTO.setUsuario(usuarioLogueado.getIdUpb());
 
             activoDTO.setFechaCreacion(now);
             activoDTO.setFechaActualizacion(now);
 
             ActivoDTO activo = activoService.create(activoDTO);
+
             return ResponseEntity.ok().body(activo);
 
         } catch (BadRequestException ex) {
@@ -242,5 +252,13 @@ public class ActivoController {
 
         }
     }
+
+
+//    @PostMapping("/upload")
+//    @ResponseStatus(code = HttpStatus.CREATED)
+//    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
+//    public void uploadImage(@RequestParam("image") MultipartFile image) throws RestException {
+//        activoService.uploadImage(image);
+//    }
 
 }

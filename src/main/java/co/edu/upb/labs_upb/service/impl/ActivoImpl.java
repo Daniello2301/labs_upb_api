@@ -25,7 +25,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +39,7 @@ import java.util.stream.Collectors;
  * It provides methods for managing Activo objects, including CRUD operations and pagination.
  */
 @Service
-public class ActivoImpl implements IActivoService {
+public class    ActivoImpl implements IActivoService {
 
     @Autowired
     private IActivoRepository activoRepository;
@@ -258,6 +260,7 @@ public class ActivoImpl implements IActivoService {
                             ConstUtil.MESSAGE_NOT_FOUND,
                             HttpStatus.BAD_REQUEST.value()));
         }
+
 
 
         // Convert to DTO to Entity
