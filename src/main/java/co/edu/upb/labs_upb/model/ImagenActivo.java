@@ -1,7 +1,17 @@
 package co.edu.upb.labs_upb.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import lombok.Data;
+
+import java.sql.Blob;
 
 @Entity
 @Table(name = "imagenes_activos")
@@ -13,11 +23,11 @@ public class ImagenActivo {
     @Column(name = "id_imagen")
     private Long id;
 
-    @OneToOne(mappedBy = "imagen")
+    @OneToOne()
     @JoinColumn(name = "id_activo")
     private Activo activo;
 
     @Lob
-    private byte[] imagen;
+    private Blob imagen;
 
 }

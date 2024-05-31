@@ -51,8 +51,7 @@ public class Activo implements Serializable {
 
     private Boolean estado;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_imagen")
+    @OneToOne(mappedBy = "activo")
     private ImagenActivo imagen;
 
     /**

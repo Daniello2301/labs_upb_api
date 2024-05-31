@@ -1,19 +1,22 @@
 package co.edu.upb.labs_upb.model;
 
+import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 
 /**
@@ -63,5 +66,8 @@ public class Aula implements Serializable {
     @ManyToOne()
     @JoinColumn(name = "id_bloque")
     private Bloque bloque;
+
+    @OneToMany(mappedBy = "aula", cascade = CascadeType.ALL)
+    private Set<ReservaDeAula> reservas;
 
 }

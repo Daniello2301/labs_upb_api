@@ -25,9 +25,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -268,13 +266,13 @@ public class    ActivoImpl implements IActivoService {
 
         // Search and validate existence of the aula, tipoActivo, bloque and usuario
         Aula aulaEncontrada = aulaRepository.findByNumeroInTheSameBloque(activoDto.getAula(), activoDto.getBloque());
-        validarBusqueda(aulaEncontrada);
+        validarBusqueda(aulaEncontrada, "aula");
         TipoActivo tipoActivoEncontrado = tipoActivoRepository.findByNomenclatura(activoDto.getTipoActivo());
-        validarBusqueda(tipoActivoEncontrado);
+        validarBusqueda(tipoActivoEncontrado, "tipoActivo");
         Bloque bloqueEncontrado = bloqueRepository.findByNumero(activoDto.getBloque());
-        validarBusqueda(bloqueEncontrado);
+        validarBusqueda(bloqueEncontrado, "bloque");
         Usuario usuarioEncontrado = usuarioRepository.findByIdUpb(activoDto.getUsuario());
-        validarBusqueda(usuarioEncontrado);
+        validarBusqueda(usuarioEncontrado, "usuario");
 
 
         // Set the tipoActivo, aula, bloque and usuario to the new activo
@@ -343,13 +341,13 @@ public class    ActivoImpl implements IActivoService {
 
         // Find the TipoActivo, Aula, Bloque, and Usuario entities associated with the Activo entity
         TipoActivo tipoActivo = tipoActivoRepository.findByNomenclatura(activo.getTipoActivo().getNomenclatura());
-        validarBusqueda(tipoActivo);
+        validarBusqueda(tipoActivo, "tipoActivo");
         Aula aula = aulaRepository.findByNumeroInTheSameBloque(activo.getAula().getNumero(), activo.getBloque().getNumero());
-        validarBusqueda(aula);
+        validarBusqueda(aula, "aula");
         Bloque bloque = bloqueRepository.findByNumero(activo.getBloque().getNumero());
-        validarBusqueda(bloque);
+        validarBusqueda(bloque, "bloque");
         Usuario usuario = usuarioRepository.findByIdUpb(activo.getUsuario().getIdUpb());
-        validarBusqueda(usuario);
+        validarBusqueda(usuario, "usuario");
 
         // Set the TipoActivo, Aula, Bloque, and Usuario attributes of the ActivoDTO object
         activoDTO.setTipoActivo(tipoActivo.getNomenclatura());
@@ -362,13 +360,13 @@ public class    ActivoImpl implements IActivoService {
     }
 
     // Validate the search
-    private void validarBusqueda(Object object) throws RestException {
+    private void validarBusqueda(Object object, String name) throws RestException {
         // If the object is null, throw a NotFoundException
         if (object == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
-                            object.toString(),
+                            "Data not found with " + name,
                             HttpStatus.NOT_FOUND.value()));
         }
     }

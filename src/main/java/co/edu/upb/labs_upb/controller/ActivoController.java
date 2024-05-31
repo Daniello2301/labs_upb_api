@@ -5,21 +5,26 @@ import co.edu.upb.labs_upb.dto.ActivoDTO;
 import co.edu.upb.labs_upb.exception.NotFoundException;
 import co.edu.upb.labs_upb.exception.BadRequestException;
 import co.edu.upb.labs_upb.exception.ErrorDto;
-import co.edu.upb.labs_upb.exception.InternalServerErrorException;
 import co.edu.upb.labs_upb.exception.RestException;
 import co.edu.upb.labs_upb.model.Usuario;
-import co.edu.upb.labs_upb.repository.IImagenActivo;
 import co.edu.upb.labs_upb.service.iface.IActivoService;
+import co.edu.upb.labs_upb.service.iface.IImagenActivoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +42,8 @@ public class ActivoController {
     @Autowired
     private IActivoService activoService;
 
-    private IImagenActivo imagenActivoRepository;
+    @Autowired
+    private IImagenActivoService imagenActivoService;
 
     /**
      * Retrieves a paginated list of ActivoDTO objects.
@@ -115,7 +121,13 @@ public class ActivoController {
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public ResponseEntity<Object> getById(@PathVariable Long id) throws RestException {
         ActivoDTO activo = activoService.getById(id);
-        return ResponseEntity.ok().body(activo);
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("Activo", activo);
+        response.put("Imagen", imagenActivoService.readImage(id));
+
+        return ResponseEntity.ok().body(response);
     }
 
     /**
@@ -148,13 +160,12 @@ public class ActivoController {
         create(@RequestBody ActivoDTO activoDTO, Authentication authentication)
             throws RestException {
 
-        try {
 
             LocalDateTime now = LocalDateTime.now();
 
             Usuario usuarioLogueado = (Usuario) authentication.getPrincipal();
 
-            if(!usuarioLogueado.getEnable()){
+            if (!usuarioLogueado.getEnable()) {
                 throw new BadRequestException(
                         ErrorDto.getErrorDto(
                                 HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -172,14 +183,6 @@ public class ActivoController {
             ActivoDTO activo = activoService.create(activoDTO);
 
             return ResponseEntity.ok().body(activo);
-
-        } catch (BadRequestException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new InternalServerErrorException(ErrorDto.getErrorDto(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(),
-                    ex.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR.value()));
-        }
 
     }
 
