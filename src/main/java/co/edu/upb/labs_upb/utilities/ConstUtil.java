@@ -7,7 +7,7 @@ public interface ConstUtil {
 //    String MESSAGE_GENERAL = "A error has been occurred, try again!";
     String MESSAGE_NOT_FOUND = "Dont exist data";
     String MESSAGE_ERROR_DATA = "Invalid Data";
-//    String MESSAGE_ALREADY = "Ya existe prospecto";
+    String MESSAGE_ALREADY = "Ya existe prospecto";
     String MESSAGE_NOT_AUTHORIZED = "No autorizado";
 
 }

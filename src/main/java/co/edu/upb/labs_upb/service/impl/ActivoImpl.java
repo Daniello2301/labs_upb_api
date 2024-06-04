@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  * It provides methods for managing Activo objects, including CRUD operations and pagination.
  */
 @Service
-public class    ActivoImpl implements IActivoService {
+public class ActivoImpl implements IActivoService {
 
     @Autowired
     private IActivoRepository activoRepository;

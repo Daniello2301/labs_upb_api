@@ -23,7 +23,7 @@ public class ReservaDeAula implements Serializable {
 
     private Long bloque;
 
-    @OneToMany(mappedBy = "reservaDeAula", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "reservaDeAula")
     private Set<FechaReserva> fechasReserva;
 
     private String persona;

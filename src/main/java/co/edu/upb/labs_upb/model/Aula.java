@@ -67,7 +67,7 @@ public class Aula implements Serializable {
     @JoinColumn(name = "id_bloque")
     private Bloque bloque;
 
-    @OneToMany(mappedBy = "aula", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "aula")
     private Set<ReservaDeAula> reservas;
 
 }

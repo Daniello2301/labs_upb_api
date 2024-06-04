@@ -12,29 +12,42 @@ import co.edu.upb.labs_upb.repository.IAulaRepository;
 import co.edu.upb.labs_upb.repository.IFechasReservasRepository;
 import co.edu.upb.labs_upb.repository.IReservasRepository;
 import co.edu.upb.labs_upb.service.iface.IReservaService;
+import co.edu.upb.labs_upb.utilities.ConstUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class ReservaImpl implements IReservaService {
 
-    @Autowired
-    private IReservasRepository reservasRepository;
+
+    private final IReservasRepository reservasRepository;
+    private final IFechasReservasRepository fechasReservasRepository;
+    private final IAulaRepository aulaRepository;
+    private final ReservasAulaConverter reservasConverter;
 
     @Autowired
-    private IFechasReservasRepository fechasReservasRepository;
+    public ReservaImpl( IReservasRepository reservasRepository,
+                       IFechasReservasRepository fechasReservasRepository,
+                       IAulaRepository aulaRepository,
+                       ReservasAulaConverter reservasConverter ) {
 
-    @Autowired
-    private IAulaRepository aulaRepository;
+        this.reservasRepository = reservasRepository;
+        this.fechasReservasRepository = fechasReservasRepository;
+        this.aulaRepository = aulaRepository;
+        this.reservasConverter = reservasConverter;
 
-    @Autowired
-    private ReservasAulaConverter reservasConverter;
+    }
+
 
     @Override
     public Map<String, Object> getAllReservas() throws RestException {
@@ -106,7 +119,7 @@ public class ReservaImpl implements IReservaService {
         Map<String, Object> response = new HashMap<>();
 
         Set<ReservasAulaDTO> reservasAulaDTOS = reservas.stream()
-                .map(reserva -> reservasConverter.reservaToReservaDTO(reserva))
+                .map(reservasConverter::reservaToReservaDTO)
                 .collect(Collectors.toSet());
 
         reservasAulaDTOS.forEach(reservaDTO -> {
@@ -126,10 +139,13 @@ public class ReservaImpl implements IReservaService {
             );
         });
 
+        response.put("reservas", reservasAulaDTOS);
 
-        return Map.of();
+        return response;
     }
 
+
+    // TODO: Implement getReservasById method
     @Override
     public Map<String, Object> getReservasById(Long idReserva) throws RestException {
         return Map.of();
@@ -178,55 +194,62 @@ public class ReservaImpl implements IReservaService {
         reserva.setFechaCreacion(now);
         reserva.setFechaActualizacion(now);
 
+
+        for (Map<String, Object> fecha : reservaDTO.getFechasReserva()) {
+
+            String inicio = (String) fecha.get("inicio");
+
+            List<ReservaDeAula> datesExist = reservasRepository.getByDateAndAula(inicio, aula.getNumero());
+
+            if (!datesExist.isEmpty()) {
+                throw new RestException(
+                        ErrorDto.getErrorDto(
+                                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                ConstUtil.MESSAGE_ALREADY,
+                                HttpStatus.BAD_REQUEST.value()
+                        )
+                );
+            }
+
+        }
+
         ReservaDeAula newReserva = reservasRepository.save(reserva);
 
-        Set<FechaReserva> fechaReservas = new HashSet<>();
 
-        reservaDTO.getFechasReserva().forEach(fecha -> {
-            FechaReserva fechaReserva = new FechaReserva();
+        Set<FechaReserva> fechasReserva = new HashSet<>();
+
+        for (Map<String, Object> fecha : reservaDTO.getFechasReserva()) {
+
+            FechaReserva fechaReservaTemp = new FechaReserva();
 
             String inicio = (String) fecha.get("inicio");
             String fin = (String) fecha.get("fin");
-            try {
-                // TODO: Validar que la fecha no esté en uso
-                Set<FechaReserva> fechaReservaExist = fechasReservasRepository.findbyFecha(inicio);
-                if (!fechaReservaExist.isEmpty()) {
-                    throw new RestException(
-                            ErrorDto.getErrorDto(
-                                    HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                                    "Ya existe una reserva para la fecha: " + inicio,
-                                    HttpStatus.BAD_REQUEST.value()
-                            )
-                    );
-                }
 
-                fechaReserva.setHoraInicio(LocalDateTime.parse(inicio));
-                fechaReserva.setHoraFin(LocalDateTime.parse(fin));
-                fechaReserva.setReservaDeAula(newReserva);
+            fechaReservaTemp.setHoraInicio(LocalDateTime.parse(inicio));
+            fechaReservaTemp.setHoraFin(LocalDateTime.parse(fin));
+            fechaReservaTemp.setReservaDeAula(newReserva);
 
-                fechaReservas.add(fechasReservasRepository.save(fechaReserva));
+            fechasReserva.add(fechasReservasRepository.save(fechaReservaTemp));
 
-                System.out.println("Fecha: " + fechaReserva);
+        }
 
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-        });
 
-        System.out.println("Reserva: " + reserva);
-
-        newReserva.setFechasReserva(fechaReservas);
+        newReserva.setFechasReserva(fechasReserva);
 
         reservaDTO.setId(newReserva.getId());
 
         return reservaDTO;
     }
 
+
+    // TODO: Implement updateDatesReserva method
     @Override
     public ReservasAulaDTO updateDatesReserva(Set<String> fechas) throws RestException {
         return null;
     }
 
+
+    // TODO: Implement deleteReserva method
     @Override
     public void deleteReserva(Long idReserva) throws RestException {
 
