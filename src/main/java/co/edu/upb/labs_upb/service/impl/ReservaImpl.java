@@ -19,11 +19,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +31,7 @@ public class ReservaImpl implements IReservaService {
     private final IAulaRepository aulaRepository;
     private final ReservasAulaConverter reservasConverter;
 
-    @Autowired
+
     public ReservaImpl( IReservasRepository reservasRepository,
                        IFechasReservasRepository fechasReservasRepository,
                        IAulaRepository aulaRepository,
@@ -144,11 +140,38 @@ public class ReservaImpl implements IReservaService {
         return response;
     }
 
-
-    // TODO: Implement getReservasById method
     @Override
     public Map<String, Object> getReservasById(Long idReserva) throws RestException {
-        return Map.of();
+
+        Optional<ReservaDeAula> reserva = reservasRepository.findById(idReserva);
+        if (reserva.isEmpty()) {
+            throw new NotFoundException(
+                    ErrorDto.getErrorDto(
+                            HttpStatus.NOT_FOUND.getReasonPhrase(),
+                            "No se encontró la reserva",
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
+
+        ReservasAulaDTO reservaDTO = reservasConverter.reservaToReservaDTO(reserva.get());
+
+        Set<FechaReserva> fechasByReserva = fechasReservasRepository.findByIdReserva(reservaDTO.getId());
+        reservaDTO.setFechasReserva(
+                fechasByReserva.stream()
+                        .map(fecha -> {
+                            Map<String, Object> fechaMap = new HashMap<>();
+                            fechaMap.put("id", fecha.getId());
+                            fechaMap.put("inicio", fecha.getHoraInicio());
+                            fechaMap.put("fin", fecha.getHoraFin());
+
+                            return fechaMap;
+
+                        }).collect(Collectors.toSet())
+
+        );
+
+        return Map.of("reserva", reservaDTO);
     }
 
     @Override
@@ -244,7 +267,19 @@ public class ReservaImpl implements IReservaService {
 
     // TODO: Implement updateDatesReserva method
     @Override
-    public ReservasAulaDTO updateDatesReserva(Set<String> fechas) throws RestException {
+    public ReservasAulaDTO updateDatesReserva(Set<String> fechas, Long idReserva) throws RestException {
+
+        if(fechas.isEmpty()){
+            throw new RestException(
+                    ErrorDto.getErrorDto(
+                            HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                            "La reserva debe tener al menos una fecha",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
+
+
         return null;
     }
 

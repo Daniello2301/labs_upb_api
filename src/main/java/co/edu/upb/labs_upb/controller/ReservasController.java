@@ -25,6 +25,13 @@ public class ReservasController {
         return ResponseEntity.ok(reservaService.getAllReservas());
     }
 
+    @GetMapping("/{idReserva}")
+    @ResponseStatus(code = HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> getReservasById(@PathVariable Long idReserva) throws RestException {
+        return ResponseEntity.ok(reservaService.getReservasById(idReserva));
+    }
+
 
     @GetMapping("/aula/{idAula}")
     @ResponseStatus(code = HttpStatus.OK)
