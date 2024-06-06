@@ -265,11 +265,10 @@ public class ReservaImpl implements IReservaService {
     }
 
 
-    // TODO: Implement updateDatesReserva method
     @Override
-    public ReservasAulaDTO updateDatesReserva(Set<String> fechas, Long idReserva) throws RestException {
+    public ReservasAulaDTO updateDatesReserva(Set<Map<String, Object>> nuevasFechas, Long idReserva) throws RestException {
 
-        if(fechas.isEmpty()){
+        if(nuevasFechas.isEmpty()){
             throw new RestException(
                     ErrorDto.getErrorDto(
                             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -279,14 +278,74 @@ public class ReservaImpl implements IReservaService {
             );
         }
 
+        ReservaDeAula reserva = reservasRepository.findById(idReserva).orElse(null);
 
-        return null;
+        if(reserva == null){
+            throw new NotFoundException(
+                    ErrorDto.getErrorDto(
+                            HttpStatus.NOT_FOUND.getReasonPhrase(),
+                            "No se encontró la reserva",
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
+
+        Set<FechaReserva> fechasDeLaReserva = fechasReservasRepository.findByIdReserva(reserva.getId());
+        if(fechasDeLaReserva.isEmpty()){
+            throw new NotFoundException(
+                    ErrorDto.getErrorDto(
+                            HttpStatus.NOT_FOUND.getReasonPhrase(),
+                            "No se encontraron fechas para la reserva",
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
+
+        fechasReservasRepository.deleteAll(fechasDeLaReserva);
+
+
+        for(Map<String, Object> fecha : nuevasFechas){
+
+            String inicio = (String) fecha.get("inicio");
+            String fin = (String) fecha.get("fin");
+
+            List<ReservaDeAula> datesExist = reservasRepository.getByDateAndAula(inicio, reserva.getAula().getNumero());
+
+            if (!datesExist.isEmpty()) {
+                throw new RestException(
+                        ErrorDto.getErrorDto(
+                                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                                ConstUtil.MESSAGE_ALREADY,
+                                HttpStatus.BAD_REQUEST.value()
+                        )
+                );
+            }
+
+            FechaReserva nuevaFecha = new FechaReserva();
+            nuevaFecha.setHoraInicio(LocalDateTime.parse(inicio));
+            nuevaFecha.setHoraFin(LocalDateTime.parse(fin));
+
+            nuevaFecha.setReservaDeAula(reserva);
+
+            FechaReserva fechaGuardada = fechasReservasRepository.save(nuevaFecha);
+
+            fechasDeLaReserva.add(fechaGuardada);
+        }
+
+
+        reserva.setFechasReserva(fechasDeLaReserva);
+
+
+        return reservasConverter.reservaToReservaDTO(reserva);
     }
 
 
     // TODO: Implement deleteReserva method
     @Override
     public void deleteReserva(Long idReserva) throws RestException {
+
+        ReservaImpl.this.getReservasById(idReserva);
+
 
     }
 }

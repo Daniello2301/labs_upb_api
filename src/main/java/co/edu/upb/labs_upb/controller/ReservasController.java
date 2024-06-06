@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.Set;
+
 
 @RestController
 @RequestMapping("/reservas")
@@ -46,6 +49,14 @@ public class ReservasController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> createReserva(@RequestBody ReservasAulaDTO reservaDTO) throws RestException {
         return ResponseEntity.ok(reservaService.createReserva(reservaDTO));
+    }
+
+
+    @PutMapping("/update/{idReserva}")
+    @ResponseStatus(code = HttpStatus.OK)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> updateDatesReserva(@RequestBody Set<Map<String, Object>> fechas, @PathVariable Long idReserva) throws RestException {
+        return ResponseEntity.ok(reservaService.updateDatesReserva(fechas, idReserva));
     }
 
 }

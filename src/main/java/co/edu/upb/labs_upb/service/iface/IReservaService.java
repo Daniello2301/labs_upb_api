@@ -16,7 +16,7 @@ public interface IReservaService {
 
     ReservasAulaDTO createReserva(ReservasAulaDTO reservaDTO) throws RestException;
 
-    ReservasAulaDTO updateDatesReserva(Set<String> fechas, Long idReserva) throws RestException;
+    ReservasAulaDTO updateDatesReserva(Set<Map<String, Object>> fechas, Long idReserva) throws RestException;
 
     void deleteReserva(Long idReserva) throws RestException;
 
