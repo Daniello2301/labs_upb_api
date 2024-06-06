@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -57,6 +58,17 @@ public class ReservasController {
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> updateDatesReserva(@RequestBody Set<Map<String, Object>> fechas, @PathVariable Long idReserva) throws RestException {
         return ResponseEntity.ok(reservaService.updateDatesReserva(fechas, idReserva));
+    }
+
+    @DeleteMapping("/delete/{idReserva}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> deleteReserva(@PathVariable Long idReserva) throws RestException {
+        HashMap<String, Object> response = new HashMap<>();
+        reservaService.deleteReserva(idReserva);
+
+        response.put("message", "Reserva eliminada correctamente");
+        return ResponseEntity.ok(response);
     }
 
 }

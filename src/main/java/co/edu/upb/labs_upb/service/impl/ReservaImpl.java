@@ -344,8 +344,34 @@ public class ReservaImpl implements IReservaService {
     @Override
     public void deleteReserva(Long idReserva) throws RestException {
 
-        ReservaImpl.this.getReservasById(idReserva);
+        ReservaDeAula reserva = reservasRepository.findById(idReserva).orElse(null);
 
+        if(reserva == null){
+            throw new NotFoundException(
+                    ErrorDto.getErrorDto(
+                            HttpStatus.NOT_FOUND.getReasonPhrase(),
+                            "No se encontró la reserva",
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
+
+        Set<FechaReserva> fechasDeLaReserva = fechasReservasRepository.findByIdReserva(reserva.getId());
+
+        if(fechasDeLaReserva.isEmpty()){
+            throw new NotFoundException(
+                    ErrorDto.getErrorDto(
+                            HttpStatus.NOT_FOUND.getReasonPhrase(),
+                            "No se encontraron fechas para la reserva",
+                            HttpStatus.NOT_FOUND.value()
+                    )
+            );
+        }
+
+        HashMap<String, Object> response = new HashMap<>();
+
+        fechasReservasRepository.deleteAll(fechasDeLaReserva);
+        reservasRepository.delete(reserva);
 
     }
 }
