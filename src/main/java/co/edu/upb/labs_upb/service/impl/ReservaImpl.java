@@ -13,13 +13,17 @@ import co.edu.upb.labs_upb.repository.IFechasReservasRepository;
 import co.edu.upb.labs_upb.repository.IReservasRepository;
 import co.edu.upb.labs_upb.service.iface.IReservaService;
 import co.edu.upb.labs_upb.utilities.ConstUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,10 +36,10 @@ public class ReservaImpl implements IReservaService {
     private final ReservasAulaConverter reservasConverter;
 
 
-    public ReservaImpl( IReservasRepository reservasRepository,
+    public ReservaImpl(IReservasRepository reservasRepository,
                        IFechasReservasRepository fechasReservasRepository,
                        IAulaRepository aulaRepository,
-                       ReservasAulaConverter reservasConverter ) {
+                       ReservasAulaConverter reservasConverter) {
 
         this.reservasRepository = reservasRepository;
         this.fechasReservasRepository = fechasReservasRepository;
@@ -268,7 +272,7 @@ public class ReservaImpl implements IReservaService {
     @Override
     public ReservasAulaDTO updateDatesReserva(Set<Map<String, Object>> nuevasFechas, Long idReserva) throws RestException {
 
-        if(nuevasFechas.isEmpty()){
+        if (nuevasFechas.isEmpty()) {
             throw new RestException(
                     ErrorDto.getErrorDto(
                             HttpStatus.BAD_REQUEST.getReasonPhrase(),
@@ -280,7 +284,7 @@ public class ReservaImpl implements IReservaService {
 
         ReservaDeAula reserva = reservasRepository.findById(idReserva).orElse(null);
 
-        if(reserva == null){
+        if (reserva == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -291,7 +295,7 @@ public class ReservaImpl implements IReservaService {
         }
 
         Set<FechaReserva> fechasDeLaReserva = fechasReservasRepository.findByIdReserva(reserva.getId());
-        if(fechasDeLaReserva.isEmpty()){
+        if (fechasDeLaReserva.isEmpty()) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -304,7 +308,7 @@ public class ReservaImpl implements IReservaService {
         fechasReservasRepository.deleteAll(fechasDeLaReserva);
 
 
-        for(Map<String, Object> fecha : nuevasFechas){
+        for (Map<String, Object> fecha : nuevasFechas) {
 
             String inicio = (String) fecha.get("inicio");
             String fin = (String) fecha.get("fin");
@@ -339,14 +343,12 @@ public class ReservaImpl implements IReservaService {
         return reservasConverter.reservaToReservaDTO(reserva);
     }
 
-
-    // TODO: Implement deleteReserva method
     @Override
     public void deleteReserva(Long idReserva) throws RestException {
 
         ReservaDeAula reserva = reservasRepository.findById(idReserva).orElse(null);
 
-        if(reserva == null){
+        if (reserva == null) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
@@ -358,7 +360,7 @@ public class ReservaImpl implements IReservaService {
 
         Set<FechaReserva> fechasDeLaReserva = fechasReservasRepository.findByIdReserva(reserva.getId());
 
-        if(fechasDeLaReserva.isEmpty()){
+        if (fechasDeLaReserva.isEmpty()) {
             throw new NotFoundException(
                     ErrorDto.getErrorDto(
                             HttpStatus.NOT_FOUND.getReasonPhrase(),
