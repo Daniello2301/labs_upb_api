@@ -157,32 +157,32 @@ public class ActivoController {
     @ResponseStatus(code = HttpStatus.CREATED)
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Object>
-        create(@RequestBody ActivoDTO activoDTO, Authentication authentication)
+    create(@RequestBody ActivoDTO activoDTO, Authentication authentication)
             throws RestException {
 
 
-            LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
 
-            Usuario usuarioLogueado = (Usuario) authentication.getPrincipal();
+        Usuario usuarioLogueado = (Usuario) authentication.getPrincipal();
 
-            if (!usuarioLogueado.getEnable()) {
-                throw new BadRequestException(
-                        ErrorDto.getErrorDto(
-                                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                                "Usuario deshabilitado",
-                                HttpStatus.BAD_REQUEST.value()
-                        )
-                );
-            }
+        if (!usuarioLogueado.getEnable()) {
+            throw new BadRequestException(
+                    ErrorDto.getErrorDto(
+                            HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                            "Usuario deshabilitado",
+                            HttpStatus.BAD_REQUEST.value()
+                    )
+            );
+        }
 
-            activoDTO.setUsuario(usuarioLogueado.getIdUpb());
+        activoDTO.setUsuario(usuarioLogueado.getIdUpb());
 
-            activoDTO.setFechaCreacion(now);
-            activoDTO.setFechaActualizacion(now);
+        activoDTO.setFechaCreacion(now);
+        activoDTO.setFechaActualizacion(now);
 
-            ActivoDTO activo = activoService.create(activoDTO);
+        ActivoDTO activo = activoService.create(activoDTO);
 
-            return ResponseEntity.ok().body(activo);
+        return ResponseEntity.ok().body(activo);
 
     }
 

@@ -260,7 +260,6 @@ public class ActivoImpl implements IActivoService {
         }
 
 
-
         // Convert to DTO to Entity
         Activo activoNuevo = activoConverter.convertToEntity(activoDto);
 

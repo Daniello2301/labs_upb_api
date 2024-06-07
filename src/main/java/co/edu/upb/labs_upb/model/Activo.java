@@ -1,16 +1,14 @@
 package co.edu.upb.labs_upb.model;
 
-import jakarta.persistence.Id;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.CascadeType;
-
+import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -51,8 +49,6 @@ public class Activo implements Serializable {
 
     private Boolean estado;
 
-    @OneToOne(mappedBy = "activo")
-    private ImagenActivo imagen;
 
     /**
      * This field represents the type of the asset (e.g., computer, furniture) associated with the current entity.
